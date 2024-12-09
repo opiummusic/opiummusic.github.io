@@ -34,6 +34,7 @@
         }
         main {
             flex: 1; /* This makes the main content grow and push the footer down */
+            padding-top: 100px; /* Adjust for the fixed navbar */
         }
         footer {
             left: 0;
@@ -170,7 +171,7 @@
                     
                     // Add game image
                     const imgContainer = document.createElement('div');
-                    imgContainer.classList.add('w-full', 'h-48', 'relative', 'overflow-hidden', 'aspect-w-1', 'aspect-h-1'); // Aspect ratio 1:1 for square
+                    imgContainer.classList.add('w-full', 'h-64', 'relative', 'overflow-hidden', 'aspect-w-1', 'aspect-h-1'); // Aspect ratio 1:1 for square
                     const img = document.createElement('img');
                     img.src = "https://ph4xus.github.io" + game.imgsrc;
                     img.alt = `${game.name} image`;
