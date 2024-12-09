@@ -170,11 +170,14 @@
                     card.classList.add('game-card', 'bg-gray-800', 'rounded-lg', 'overflow-hidden', 'shadow-lg', 'transform', 'hover:scale-105', 'transition-all', 'duration-300');
                     
                     // Add game image
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('w-full', 'h-48', 'relative', 'overflow-hidden', 'aspect-w-1', 'aspect-h-1'); // Aspect ratio 1:1 for square
                     const img = document.createElement('img');
                     img.src = "https://ph4xus.github.io" + game.imgsrc;
                     img.alt = `${game.name} image`;
-                    img.classList.add('w-full', 'h-48', 'object-cover');
-                    card.appendChild(img);
+                    img.classList.add('object-cover', 'absolute', 'top-0', 'left-0', 'w-full', 'h-full');
+                    imgContainer.appendChild(img);
+                    card.appendChild(imgContainer);
                     
                     // Add game name
                     const title = document.createElement('h3');
