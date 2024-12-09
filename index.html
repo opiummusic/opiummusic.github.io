@@ -11,6 +11,21 @@
                 background: linear-gradient(to right, #1e3a8a, #3b82f6, #06b6d4);
             }
         }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        header {
+            position: relative;
+            overflow: hidden;
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
@@ -26,13 +41,16 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="bg-gradient-to-liquid py-20 text-center mt-16">
-        <h1 class="text-5xl font-bold">Liquid Game</h1>
-        <p class="mt-4 text-lg">Dive into the immersive world of Liquid Game. Are you ready?</p>
-        <a href="#features" class="mt-6 inline-block px-6 py-3 bg-blue-500 text-lg font-medium rounded-lg hover:bg-blue-600">
-            Play Now
-        </a>
+    <!-- Hero Section with Canvas -->
+    <header class="bg-gradient-to-liquid py-20 text-center">
+        <canvas id="liquidCanvas"></canvas>
+        <div class="header-content">
+            <h1 class="text-5xl font-bold">Liquid Game</h1>
+            <p class="mt-4 text-lg">Dive into the immersive world of Liquid Game. Are you ready?</p>
+            <a href="#features" class="mt-6 inline-block px-6 py-3 bg-blue-500 text-lg font-medium rounded-lg hover:bg-blue-600">
+                Play Now
+            </a>
+        </div>
     </header>
 
     <!-- Features Section -->
@@ -54,38 +72,22 @@
         </div>
     </section>
 
-    <!-- Media Section -->
-    <section id="media" class="py-16 bg-gray-800">
-        <h2 class="text-3xl font-semibold text-center mb-8">Gallery</h2>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <img src="https://source.unsplash.com/random/400x300?game" alt="Screenshot" class="rounded-lg shadow-lg">
-            <img src="https://source.unsplash.com/random/401x300?game" alt="Screenshot" class="rounded-lg shadow-lg">
-            <img src="https://source.unsplash.com/random/402x300?game" alt="Screenshot" class="rounded-lg shadow-lg">
-        </div>
-    </section>
-
-    <!-- Interactive Game Demo -->
-    <section id="game-demo" class="py-16 px-8 bg-gray-900 text-center">
-        <h2 class="text-3xl font-semibold mb-8">Try the Liquid Game Demo</h2>
-        <canvas id="liquidCanvas" class="w-full max-w-lg mx-auto rounded-lg shadow-md"></canvas>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-8 bg-gray-800 text-center">
-        <p class="text-gray-400">© 2024 Liquid Game. All rights reserved.</p>
-    </footer>
-
     <!-- Scripts -->
     <script>
-        // Interactive Liquid Simulation
+        // Canvas Setup
         const canvas = document.getElementById('liquidCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 600;
-        canvas.height = 400;
+        const header = document.querySelector('header');
+        canvas.width = header.offsetWidth;
+        canvas.height = header.offsetHeight;
 
-        let particles = [];
-        const colors = ['#1e3a8a', '#3b82f6', '#06b6d4'];
+        window.addEventListener('resize', () => {
+            canvas.width = header.offsetWidth;
+            canvas.height = header.offsetHeight;
+            init();
+        });
 
+        // Particle Class
         class Particle {
             constructor(x, y, dx, dy, radius, color) {
                 this.x = x;
@@ -111,13 +113,17 @@
                 if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
                     this.dy = -this.dy;
                 }
-
                 this.x += this.dx;
                 this.y += this.dy;
                 this.draw();
             }
         }
 
+        // Particles Array
+        let particles = [];
+        const colors = ['#1e3a8a', '#3b82f6', '#06b6d4'];
+
+        // Initialize Particles
         function init() {
             particles = [];
             for (let i = 0; i < 50; i++) {
@@ -131,12 +137,14 @@
             }
         }
 
+        // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(particle => particle.update());
         }
 
+        // Start Animation
         init();
         animate();
     </script>
