@@ -14,8 +14,20 @@
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-800 fixed top-0 left-0 w-full z-50 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
+            <a href="#" class="text-2xl font-bold text-blue-400">Liquid Game</a>
+            <div class="space-x-4">
+                <a href="#features" class="text-gray-300 hover:text-white">Features</a>
+                <a href="#media" class="text-gray-300 hover:text-white">Gallery</a>
+                <a href="#game-demo" class="text-gray-300 hover:text-white">Game Demo</a>
+            </div>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
-    <header class="bg-gradient-to-liquid py-20 text-center">
+    <header class="bg-gradient-to-liquid py-20 text-center mt-16">
         <h1 class="text-5xl font-bold">Liquid Game</h1>
         <p class="mt-4 text-lg">Dive into the immersive world of Liquid Game. Are you ready?</p>
         <a href="#features" class="mt-6 inline-block px-6 py-3 bg-blue-500 text-lg font-medium rounded-lg hover:bg-blue-600">
@@ -52,11 +64,81 @@
         </div>
     </section>
 
+    <!-- Interactive Game Demo -->
+    <section id="game-demo" class="py-16 px-8 bg-gray-900 text-center">
+        <h2 class="text-3xl font-semibold mb-8">Try the Liquid Game Demo</h2>
+        <canvas id="liquidCanvas" class="w-full max-w-lg mx-auto rounded-lg shadow-md"></canvas>
+    </section>
+
     <!-- Footer -->
     <footer class="py-8 bg-gray-800 text-center">
         <p class="text-gray-400">© 2024 Liquid Game. All rights reserved.</p>
     </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Interactive Liquid Simulation
+        const canvas = document.getElementById('liquidCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;
+        canvas.height = 400;
+
+        let particles = [];
+        const colors = ['#1e3a8a', '#3b82f6', '#06b6d4'];
+
+        class Particle {
+            constructor(x, y, dx, dy, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+                this.radius = radius;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            update() {
+                if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+                    this.dx = -this.dx;
+                }
+                if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+                    this.dy = -this.dy;
+                }
+
+                this.x += this.dx;
+                this.y += this.dy;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                const radius = Math.random() * 5 + 2;
+                const x = Math.random() * (canvas.width - radius * 2) + radius;
+                const y = Math.random() * (canvas.height - radius * 2) + radius;
+                const dx = (Math.random() - 0.5) * 2;
+                const dy = (Math.random() - 0.5) * 2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, dx, dy, radius, color));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => particle.update());
+        }
+
+        init();
+        animate();
+    </script>
 </body>
 </html>
-
-
