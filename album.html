@@ -263,7 +263,7 @@
             currentPlayingElement.classList.add('playing');
 
             currentSongIndex = songIndex;
-            const songPath = `music/${artistName}/${albumName}/${encodeURIComponent(song)}`;
+            const songPath = `music/${encodeURIComponent(song)}`;
             audio.src = songPath;
 
             playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
