@@ -149,10 +149,11 @@
                         <ul>
                             ${album.songs.map(song => {
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
-                                const encodedSongPath = encodeURIComponent(`music/${album.name}/${song}`);
+                                const encodedAlbumName = encodeURIComponent(album.name);
+                                const encodedSong = encodeURIComponent(song);
                                 return `
                                     <li>
-                                        <i class="fa fa-play play-icon" onclick="playSong('${encodedSongPath}')"></i>
+                                        <i class="fa fa-play play-icon" onclick="playSong('music/${encodedAlbumName}/${encodedSong}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
