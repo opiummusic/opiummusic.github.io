@@ -18,6 +18,21 @@
         .album-container {
             padding: 20px;
         }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #1f1f1f;
+            color: #ffffff;
+            font-size: 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #444444;
+        }
         .album-card {
             display: inline-block;
             margin: 20px;
@@ -48,9 +63,6 @@
             border-radius: 5px;
             transition: background-color 0.3s;
         }
-        .album-card ul li:nth-child(even) {
-            background-color: #3a3a3a;
-        }
         .album-card ul li:hover {
             background-color: #444444;
         }
@@ -79,7 +91,10 @@
 </head>
 <body>
     <div class="album-container" id="albumContainer">
-        <h1>Album</h1>
+        <!-- Back Button -->
+        <a href="play.html" class="back-button">Back to Player</a>
+
+        <!-- Album details and songs -->
     </div>
 
     <script>
@@ -126,7 +141,7 @@
                 const albumContainer = document.getElementById("albumContainer");
 
                 // Create the album content dynamically
-                albumContainer.innerHTML = `
+                albumContainer.innerHTML += `
                     <div class="album-card">
                         <img src="${album.image}" alt="${album.name}">
                         <h3>${album.name}</h3>
