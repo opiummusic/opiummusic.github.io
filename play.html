@@ -88,37 +88,49 @@
         <div class="album-grid" id="albumGrid"></div>
     </div>
 
-    <script>
-        // Album data
-        const albums = [
-            { title: "Die Lit", image: "images/dielit.jpeg" },
-            { title: "We Love Tecca", image: "images/welovetecca.jpeg" },
-            { title: "X", image: "images/x.jpeg" },
-            { title: "Great Chaos", image: "images/greatchoas.jpeg" },
-            { title: "Lyfe", image: "images/lyfe.jpeg" },
-            { title: "Luv Is Rage", image: "images/luvisrage.jpeg" },
-        ];
+   <script>
+    // Album data
+    const albums = [
+        { title: "Die Lit", image: "images/dielit.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
+        { title: "We Love Tecca", image: "images/welovetecca.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
+        { title: "X", image: "images/x.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
+        { title: "Great Chaos", image: "images/greatchoas.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
+        { title: "Lyfe", image: "images/lyfe.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
+        { title: "Luv Is Rage", image: "images/luvisrage.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
+    ];
 
-        // Function to load albums
-        function loadAlbums() {
-            const albumGrid = document.getElementById("albumGrid");
-            albums.forEach(album => {
+    // Function to load albums
+    function loadAlbums() {
+        const albumGrid = document.getElementById("albumGrid");
+        const imagePromises = albums.map(album => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = album.image;
+                img.onload = resolve;
+                img.onerror = resolve; // Resolve even if there's an error loading the image
                 const albumCard = document.createElement("div");
                 albumCard.className = "album-card";
                 albumCard.innerHTML = `
-                    <img src="${album.image}" alt="${album.title}">
+                    <a href="${album.link}" target="_blank">
+                        <img src="${album.image}" alt="${album.title}">
+                    </a>
                     <h3>${album.title}</h3>
                 `;
                 albumGrid.appendChild(albumCard);
             });
+        });
 
+        // Wait for all images to load
+        Promise.all(imagePromises).then(() => {
             // Hide loading screen and show albums
             document.getElementById("loadingScreen").style.display = "none";
             document.getElementById("albumContainer").style.display = "block";
-        }
+        });
+    }
 
-        // Simulate loading (e.g., downloading the shortcut)
-        setTimeout(loadAlbums, 2000); // Adjust the timeout duration as needed
-    </script>
+    // Start loading the albums
+    loadAlbums();
+</script>
+
 </body>
 </html>
