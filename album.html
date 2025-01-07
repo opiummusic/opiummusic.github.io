@@ -62,8 +62,8 @@
             border-radius: 5px;
             transition: background-color 0.3s;
         }
-        .album-card ul li:hover {
-            background-color: #444444;
+        .album-card ul li.playing {
+            background-color: #1f8fff;
         }
         .play-icon {
             color: #ffffff;
@@ -216,8 +216,8 @@
                                 const encodedAlbumUrl = encodeURIComponent(albumUrl);
                                 const encodedSong = encodeURIComponent(song);
                                 return `
-                                    <li>
-                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedAlbumUrl}', '${encodedSong}')"></i>
+                                    <li id="song-${index}">
+                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedAlbumUrl}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
@@ -231,14 +231,24 @@
         }
 
         // Function to play the song
-        function playSong(songIndex, albumUrl, song) {
+        function playSong(songIndex, albumUrl, song, songElementId) {
             if (audio) {
                 audio.pause();
                 audio = null;
             }
 
+            // Remove playing class from previously playing song
+            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
+            if (previousPlayingElement) {
+                previousPlayingElement.classList.remove('playing');
+            }
+
+            // Add playing class to the current song
+            const currentPlayingElement = document.getElementById(songElementId);
+            currentPlayingElement.classList.add('playing');
+
             currentSongIndex = songIndex;
-            const songPath = `music/${albumUrl}/${song}`;
+            const songPath = `music/${albumUrl}/${encodeURIComponent(song)}`;
             audio = new Audio(songPath);
 
             playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
@@ -292,7 +302,7 @@
                 currentSongIndex++;
                 const song = currentAlbum.songs[currentSongIndex];
                 const albumUrl = getQueryParameter('album');
-                playSong(currentSongIndex, encodeURIComponent(albumUrl), encodeURIComponent(song));
+                playSong(currentSongIndex, encodeURIComponent(albumUrl), song, `song-${currentSongIndex}`);
             }
         }
 
