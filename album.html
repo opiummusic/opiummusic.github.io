@@ -325,7 +325,7 @@
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: song.replace(".mp3", ""),
-                    artist: artistName,
+                    artist: decodeURIComponent(artistName),
                     album: currentAlbum.name,
                     artwork: [
                         { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
