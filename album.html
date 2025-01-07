@@ -40,6 +40,25 @@
         .album-card ul li {
             margin: 5px 0;
         }
+        a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .play-btn {
+            background-color: #1f8fff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .play-btn:hover {
+            background-color: #1a7bc3;
+        }
     </style>
 </head>
 <body>
@@ -96,7 +115,12 @@
                         <img src="${album.image}" alt="${album.name}">
                         <h3>${album.name}</h3>
                         <ul>
-                            ${album.songs.map(song => `<li><a href="music/${album.name}/${song}" download>${song}</a></li>`).join('')}
+                            ${album.songs.map(song => `
+                                <li>
+                                    <a href="music/${album.name}/${song}" download>${song}</a>
+                                    <button class="play-btn" onclick="playSong('music/${album.name}/${song}')">Play</button>
+                                </li>
+                            `).join('')}
                         </ul>
                     </div>
                 `;
@@ -105,6 +129,13 @@
             }
         }
 
+        // Function to play the song
+        function playSong(songPath) {
+            const audio = new Audio(songPath);
+            audio.play();
+        }
+
+        // Get the album name from the URL and load the album
         const albumName = getQueryParameter('album');
         if (albumName) {
             loadAlbum(albumName);
