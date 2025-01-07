@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opium Music Player</title>
+    <style>
+        /* Global Styles */
+        body {
+            background: linear-gradient(135deg, #0d1117, #1f2937);
+            color: #e5e7eb;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Centered container */
+        .container {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            background: #1f2937;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Header */
+        h1 {
+            color: #60a5fa;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1rem;
+            color: #ffffff;
+            background: #2563eb;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Slideshow Container */
+        .slideshow-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        /* Slides */
+        .slide {
+            display: none;
+        }
+
+        .slide img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        /* Text Overlay */
+        .slide-text {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            display: none;
+            background: #374151;
+            color: #e5e7eb;
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .tooltip.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Opium Music Player</h1>
+        <p>Experience the joy of music with over 30+ songs at your fingertips.</p>
+        
+        <!-- Slideshow -->
+        <div class="slideshow-container">
+            <div class="slide">
+                <img src="https://via.placeholder.com/800x400?text=Music+1" alt="Slide 1">
+                <div class="slide-text">30+ Songs</div>
+            </div>
+            <div class="slide">
+                <img src="https://via.placeholder.com/800x400?text=Music+2" alt="Slide 2">
+                <div class="slide-text">30+ Songs</div>
+            </div>
+            <div class="slide">
+                <img src="https://via.placeholder.com/800x400?text=Music+3" alt="Slide 3">
+                <div class="slide-text">30+ Songs</div>
+            </div>
+        </div>
+
+        <!-- Add to Home Screen Button -->
+        <button class="btn" onclick="showTooltip()">Add to Home Screen</button>
+        <div id="tooltip" class="tooltip">
+            Open the share menu in Safari and select <strong>Add to Home Screen</strong>.
+        </div>
+    </div>
+
+    <script>
+        // Tooltip display
+        function showTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.classList.add('visible');
+            setTimeout(() => {
+                tooltip.classList.remove('visible');
+            }, 5000); // Hide the tooltip after 5 seconds
+        }
+
+        // Slideshow functionality
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            const slides = document.getElementsByClassName('slide');
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = 'none';  
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+            slides[slideIndex - 1].style.display = 'block';  
+            setTimeout(showSlides, 3000); // Change slide every 3 seconds
+        }
+    </script>
+</body>
+</html>
