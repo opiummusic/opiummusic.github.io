@@ -166,18 +166,12 @@
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
 
-        // Function to get the query parameter from the URL
-        function getQueryParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        // Function to load the album based on the query
-        function loadAlbum(albumUrl) {
-            const albumData = {
+        // Sample album data with multiple artists and albums
+        const albumData = {
+            "Lil Uzi": {
                 "LuvIsRage": {
-                    "name": "Luv is rage[deluxe]",
-                    "image": "images/luvisrage.jpeg",
+                    "name": "Luv is rage [deluxe]",
+                    "image": "images/LuvIsRage.jpg",
                     "songs": [
                         "20 Min.mp3",
                         "444+222.mp3",
@@ -200,10 +194,29 @@
                         "X.mp3",
                         "XO Tour Llif3.mp3"
                     ]
-                }
-            };
+                },
+                "Ken Carson": {
+                "GreatChoas": {
+                    "name": "Great Choas [deluxe]",
+                    "image": "images/GreatChoas.jpg",
+                    "songs": [
+                        "ss.mp3",
+                        "overseas.mp3"
+                    ]
+                },
 
-            currentAlbum = albumData[albumUrl];
+
+        };
+
+        // Function to get the query parameter from the URL
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to load the album based on the query
+        function loadAlbum(artistName, albumName) {
+            currentAlbum = albumData[artistName] && albumData[artistName][albumName];
 
             if (currentAlbum) {
                 const albumContainer = document.getElementById("albumContainer");
@@ -216,10 +229,11 @@
                         <ul>
                             ${currentAlbum.songs.map((song, index) => {
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
-                                const encodedAlbumUrl = encodeURIComponent(albumUrl);
+                                const encodedArtistName = encodeURIComponent(artistName);
+                                const encodedAlbumName = encodeURIComponent(albumName);
                                 return `
                                     <li id="song-${index}">
-                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedAlbumUrl}', '${song}', 'song-${index}')"></i>
+                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedArtistName}', '${encodedAlbumName}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
@@ -233,7 +247,7 @@
         }
 
         // Function to play the song
-        function playSong(songIndex, albumUrl, song, songElementId) {
+        function playSong(songIndex, artistName, albumName, song, songElementId) {
             if (audio) {
                 audio.pause();
             }
@@ -249,7 +263,7 @@
             currentPlayingElement.classList.add('playing');
 
             currentSongIndex = songIndex;
-            const songPath = `music/${albumUrl}/${encodeURIComponent(song)}`;
+            const songPath = `music/${artistName}/${albumName}/${encodeURIComponent(song)}`;
             audio.src = songPath;
 
             playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
@@ -276,15 +290,15 @@
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: song.replace(".mp3", ""),
-                    artist: "Lil uzi", // Replace with actual artist name if available
+                    artist: artistName,
                     album: currentAlbum.name,
                     artwork: [
-                        { src: currentAlbum.image, sizes: '96x96', type: './images/LuvIsRage.jpeg' },
-                        { src: currentAlbum.image, sizes: '128x128', type: './images/LuvIsRage.jpeg' },
-                        { src: currentAlbum.image, sizes: '192x192', type: './images/LuvIsRage.jpeg' },
-                        { src: currentAlbum.image, sizes: '256x256', type: './images/LuvIsRage.jpeg' },
-                        { src: currentAlbum.image, sizes: '384x384', type: './images/LuvIsRage.jpeg' },
-                        { src: currentAlbum.image, sizes: '512x512', type: './images/LuvIsRage.jpeg' }
+                        { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '512x512', type: 'image/jpeg' }
                     ]
                 });
 
@@ -324,8 +338,9 @@
             if (currentSongIndex < currentAlbum.songs.length - 1) {
                 currentSongIndex++;
                 const song = currentAlbum.songs[currentSongIndex];
-                const albumUrl = getQueryParameter('album');
-                playSong(currentSongIndex, encodeURIComponent(albumUrl), song, `song-${currentSongIndex}`);
+                const artistName = getQueryParameter('artist');
+                const albumName = getQueryParameter('album');
+                playSong(currentSongIndex, encodeURIComponent(artistName), encodeURIComponent(albumName), song, `song-${currentSongIndex}`);
             }
         }
 
@@ -333,8 +348,9 @@
             if (currentSongIndex > 0) {
                 currentSongIndex--;
                 const song = currentAlbum.songs[currentSongIndex];
-                const albumUrl = getQueryParameter('album');
-                playSong(currentSongIndex, encodeURIComponent(albumUrl), song, `song-${currentSongIndex}`);
+                const artistName = getQueryParameter('artist');
+                const albumName = getQueryParameter('album');
+                playSong(currentSongIndex, encodeURIComponent(artistName), encodeURIComponent(albumName), song, `song-${currentSongIndex}`);
             }
         }
 
@@ -342,10 +358,11 @@
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
 
-        // Get the album name from the URL and load the album
-        const albumUrl = getQueryParameter('album');
-        if (albumUrl) {
-            loadAlbum(albumUrl);
+        // Get the artist and album name from the URL and load the album
+        const artistName = getQueryParameter('artist');
+        const albumName = getQueryParameter('album');
+        if (artistName && albumName) {
+            loadAlbum(artistName, albumName);
         } else {
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
