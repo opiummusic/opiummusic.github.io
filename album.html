@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opium Music Player</title>
+    <style>
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .album-container {
+            padding: 20px;
+        }
+        .album-card {
+            display: inline-block;
+            margin: 20px;
+            background: #1f1f1f;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+        .album-card img {
+            width: 200px;
+            height: 200px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .album-card h3 {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="album-container" id="albumContainer">
+        <h1>Album</h1>
+    </div>
+
+    <script>
+        // Function to get the query parameter from the URL
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to load the album based on the query
+        function loadAlbum(albumName) {
+            const albumData = {
+                "Die_Lit": {
+                    "name": "Die Lit",
+                    "image": "images/dielit.jpeg",
+                    "songs": ["song1.mp3", "song2.mp3"]
+                },
+                "We_Love_Tecca": {
+                    "name": "We Love Tecca",
+                    "image": "images/welovetecca.jpeg",
+                    "songs": ["song1.mp3", "song2.mp3"]
+                },
+                "X": {
+                    "name": "X",
+                    "image": "images/x.jpeg",
+                    "songs": ["song1.mp3", "song2.mp3"]
+                }
+                // Add other albums here
+            };
+
+            const album = albumData[albumName];
+
+            if (album) {
+                const albumContainer = document.getElementById("albumContainer");
+
+                albumContainer.innerHTML = `
+                    <div class="album-card">
+                        <img src="${album.image}" alt="${album.name}">
+                        <h3>${album.name}</h3>
+                        <ul>
+                            ${album.songs.map(song => `<li><a href="music/${album.name}/${song}" download>${song}</a></li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            } else {
+                document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
+            }
+        }
+
+        // Get the album name from the URL and load the album
+        const albumName = getQueryParameter('album');
+        if (albumName) {
+            loadAlbum(albumName);
+        } else {
+            document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
+        }
+    </script>
+</body>
+</html>
