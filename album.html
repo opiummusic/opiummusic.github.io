@@ -39,6 +39,28 @@
         }
         .album-card ul li {
             margin: 5px 0;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #2c2c2c;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .album-card ul li:nth-child(even) {
+            background-color: #3a3a3a;
+        }
+        .album-card ul li:hover {
+            background-color: #444444;
+        }
+        .play-icon {
+            color: #1f8fff;
+            font-size: 1.5rem;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .song-name {
+            flex-grow: 1;
+            text-align: left;
         }
         a {
             color: #ffffff;
@@ -46,18 +68,6 @@
         }
         a:hover {
             text-decoration: underline;
-        }
-        .play-btn {
-            background-color: #1f8fff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .play-btn:hover {
-            background-color: #1a7bc3;
         }
     </style>
 </head>
@@ -119,8 +129,8 @@
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
                                 return `
                                     <li>
-                                        <a href="music/${album.name}/${song}" download>${songName}</a>
-                                        <button class="play-btn" onclick="playSong('music/${album.name}/${song}')">Play</button>
+                                        <span class="play-icon" onclick="playSong('music/${album.name}/${song}')">▶</span>
+                                        <span class="song-name">${songName}</span>
                                     </li>
                                 `;
                             }).join('')}
@@ -136,14 +146,14 @@
         function playSong(songPath) {
             const audio = new Audio(songPath);
 
-            // Make sure audio is loaded before playing
+            // Ensure audio is loaded before playing
             audio.oncanplaythrough = () => {
                 audio.play();
             };
 
             // Handle potential errors
-            audio.onerror = (e) => {
-                alert('Error playing the song: ' + e.message);
+            audio.onerror = () => {
+                alert('Error playing the song. Please check the file path or format.');
             };
         }
 
