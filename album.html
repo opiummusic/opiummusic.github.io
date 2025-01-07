@@ -33,6 +33,13 @@
         .album-card h3 {
             font-size: 1.5rem;
         }
+        .album-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .album-card ul li {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -53,7 +60,28 @@
                 "LuvIsRage": {
                     "name": "Luv is rage[deluxe]",
                     "image": "images/luvisrage.jpeg",
-                    "songs": ["song1.mp3", "song2.mp3"]
+                    "songs": [
+                        "20 Min.mp3",
+                        "444+222.mp3",
+                        "Dark Queen.mp3",
+                        "Diamonds All on My Wrist.mp3",
+                        "Early 20 Rager.mp3",
+                        "Feelings Mutual.mp3",
+                        "For Real.mp3",
+                        "How to Talk.mp3",
+                        "Loaded.mp3",
+                        "Malfunction.mp3",
+                        "Neon Guts (feat. Pharrell Williams).mp3",
+                        "No Sleep Leak.mp3",
+                        "Pretty Mami.mp3",
+                        "Sauce It Up.mp3",
+                        "Skir Skirr.mp3",
+                        "The Way Life Goes (feat. Oh Wonder).mp3",
+                        "Two®.mp3",
+                        "UnFazed (feat. The Weeknd).mp3",
+                        "X.mp3",
+                        "XO Tour Llif3.mp3"
+                    ]
                 }
             };
 
@@ -62,6 +90,7 @@
             if (album) {
                 const albumContainer = document.getElementById("albumContainer");
 
+                // Create the album content dynamically
                 albumContainer.innerHTML = `
                     <div class="album-card">
                         <img src="${album.image}" alt="${album.name}">
@@ -76,7 +105,6 @@
             }
         }
 
-        // Get the album name from the URL and load the album
         const albumName = getQueryParameter('album');
         if (albumName) {
             loadAlbum(albumName);
