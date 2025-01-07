@@ -152,8 +152,11 @@
         </div>
     </div>
 
+    <!-- Audio Element -->
+    <audio id="audioPlayer" preload="auto"></audio>
+
     <script>
-        let audio = null;
+        let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
         let currentAlbum = null;
         let playPauseButton = document.getElementById("playPauseButton");
@@ -214,7 +217,6 @@
                             ${currentAlbum.songs.map((song, index) => {
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
                                 const encodedAlbumUrl = encodeURIComponent(albumUrl);
-                                const encodedSong = encodeURIComponent(song);
                                 return `
                                     <li id="song-${index}">
                                         <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedAlbumUrl}', '${song}', 'song-${index}')"></i>
@@ -234,7 +236,6 @@
         function playSong(songIndex, albumUrl, song, songElementId) {
             if (audio) {
                 audio.pause();
-                audio = null;
             }
 
             // Remove playing class from previously playing song
@@ -249,7 +250,7 @@
 
             currentSongIndex = songIndex;
             const songPath = `music/${albumUrl}/${encodeURIComponent(song)}`;
-            audio = new Audio(songPath);
+            audio.src = songPath;
 
             playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
             playerAlbumImage.src = currentAlbum.image;
@@ -270,6 +271,28 @@
             audio.onended = () => {
                 nextSong();
             };
+
+            // Update Media Session API
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: song.replace(".mp3", ""),
+                    artist: "Lil uzi", // Replace with actual artist name if available
+                    album: currentAlbum.name,
+                    artwork: [
+                        { src: currentAlbum.image, sizes: '96x96', type: './images/LuvIsRage.jpeg' },
+                        { src: currentAlbum.image, sizes: '128x128', type: './images/LuvIsRage.jpeg' },
+                        { src: currentAlbum.image, sizes: '192x192', type: './images/LuvIsRage.jpeg' },
+                        { src: currentAlbum.image, sizes: '256x256', type: './images/LuvIsRage.jpeg' },
+                        { src: currentAlbum.image, sizes: '384x384', type: './images/LuvIsRage.jpeg' },
+                        { src: currentAlbum.image, sizes: '512x512', type: './images/LuvIsRage.jpeg' }
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', togglePlayPause);
+                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
+                navigator.mediaSession.setActionHandler('previoustrack', previousSong);
+                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+            }
         }
 
         function startElapsedTimeUpdate() {
@@ -306,8 +329,18 @@
             }
         }
 
+        function previousSong() {
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+                const song = currentAlbum.songs[currentSongIndex];
+                const albumUrl = getQueryParameter('album');
+                playSong(currentSongIndex, encodeURIComponent(albumUrl), song, `song-${currentSongIndex}`);
+            }
+        }
+
         playPauseButton.addEventListener("click", togglePlayPause);
         document.getElementById("nextButton").addEventListener("click", nextSong);
+        document.getElementById("previousButton").addEventListener("click", previousSong);
 
         // Get the album name from the URL and load the album
         const albumUrl = getQueryParameter('album');
