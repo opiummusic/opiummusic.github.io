@@ -13,25 +13,24 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            text-align: center;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.5rem;
+            color: #ffffff;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .back-button:hover {
+            color: #1f8fff;
         }
         .album-container {
             padding: 20px;
-        }
-        .back-button {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: #1f1f1f;
-            color: #ffffff;
-            font-size: 1rem;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-        .back-button:hover {
-            background-color: #444444;
+            text-align: center;
         }
         .album-card {
             display: inline-block;
@@ -90,10 +89,12 @@
     </style>
 </head>
 <body>
-    <div class="album-container" id="albumContainer">
-        <!-- Back Button -->
-        <a href="play.html" class="back-button">Back to Player</a>
+    <!-- Small Back Button -->
+    <button class="back-button" onclick="window.location.href='play.html'">
+        <i class="fa fa-arrow-left"></i>
+    </button>
 
+    <div class="album-container" id="albumContainer">
         <!-- Album details and songs -->
     </div>
 
@@ -141,7 +142,7 @@
                 const albumContainer = document.getElementById("albumContainer");
 
                 // Create the album content dynamically
-                albumContainer.innerHTML += `
+                albumContainer.innerHTML = `
                     <div class="album-card">
                         <img src="${album.image}" alt="${album.name}">
                         <h3>${album.name}</h3>
