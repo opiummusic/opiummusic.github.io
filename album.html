@@ -127,13 +127,11 @@
     </style>
 </head>
 <body>
-    <!-- Small Back Button -->
     <button class="back-button" onclick="window.location.href='play.html'">
         <i class="fa fa-arrow-left"></i>
     </button>
 
     <div class="album-container" id="albumContainer">
-        <!-- Album details and songs -->
     </div>
 
     <div class="player-strip" id="playerStrip" style="display: none;">
@@ -154,20 +152,6 @@
   
     <audio id="audioPlayer"></audio>
 
-    <!-- Unlock AudioContext for Safari and Chrome -->
-    <script>
-        function unlockAudioContext(audioCtx) {
-            if (audioCtx.state !== 'suspended') return;
-            const b = document.body;
-            const events = ['touchstart','touchend', 'mousedown','keydown'];
-            events.forEach(e => b.addEventListener(e, unlock, false));
-            function unlock() { audioCtx.resume().then(clean); }
-            function clean() { events.forEach(e => b.removeEventListener(e, unlock)); }
-        }
-
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        unlockAudioContext(audioCtx);
-    </script>
 
     <script>
         let audio = document.getElementById('audioPlayer');
@@ -180,7 +164,6 @@
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
 
-        // Sample album data with multiple artists and albums
         const albumData = {
             "Lil Uzi": {
                 "LuvIsRage": {
@@ -237,20 +220,17 @@
             }
         };
 
-        // Function to get the query parameter from the URL
         function getQueryParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
-        // Function to load the album based on the query
         function loadAlbum(artistName, albumName) {
             currentAlbum = albumData[artistName] && albumData[artistName][albumName];
 
             if (currentAlbum) {
                 const albumContainer = document.getElementById("albumContainer");
 
-                // Create the album content dynamically
                 albumContainer.innerHTML = `
                     <div class="album-card">
                         <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
@@ -275,19 +255,16 @@
             }
         }
 
-        // Function to play the song
         function playSong(songIndex, artistName, albumName, song, songElementId) {
             if (audio) {
                 audio.pause();
             }
 
-            // Remove playing class from previously playing song
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
                 previousPlayingElement.classList.remove('playing');
             }
 
-            // Add playing class to the current song
             const currentPlayingElement = document.getElementById(songElementId);
             currentPlayingElement.classList.add('playing');
 
@@ -315,7 +292,6 @@
                 nextSong();
             };
 
-            // Update Media Session API if available
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: song.replace(".mp3", ""),
@@ -387,7 +363,6 @@
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
 
-        // Get the artist and album name from the URL and load the album
         const artistName = getQueryParameter('artist');
         const albumName = getQueryParameter('album');
         if (artistName && albumName) {
