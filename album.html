@@ -86,6 +86,45 @@
         a:hover {
             text-decoration: underline;
         }
+        .player-strip {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1f1f1f;
+            padding: 10px;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .player-strip img {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            margin-right: 10px;
+        }
+        .player-strip .song-info {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+        .player-strip .song-info span {
+            margin-left: 10px;
+        }
+        .player-strip .controls {
+            display: flex;
+            align-items: center;
+        }
+        .player-strip .controls i {
+            font-size: 1.5rem;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .player-strip .controls i:hover {
+            color: #1f8fff;
+        }
     </style>
 </head>
 <body>
@@ -98,7 +137,32 @@
         <!-- Album details and songs -->
     </div>
 
+    <div class="player-strip" id="playerStrip" style="display: none;">
+        <div class="song-info">
+            <img id="playerAlbumImage" src="" alt="Album Art">
+            <div>
+                <span id="playerSongName"></span>
+                <span id="playerElapsedTime">0:00</span>
+            </div>
+        </div>
+        <div class="controls">
+            <i class="fa fa-backward" id="previousButton"></i>
+            <i class="fa fa-play" id="playPauseButton"></i>
+            <i class="fa fa-forward" id="nextButton"></i>
+        </div>
+    </div>
+
     <script>
+        let audio = null;
+        let currentSongIndex = 0;
+        let currentAlbum = null;
+        let playPauseButton = document.getElementById("playPauseButton");
+        let playerStrip = document.getElementById("playerStrip");
+        let playerSongName = document.getElementById("playerSongName");
+        let playerAlbumImage = document.getElementById("playerAlbumImage");
+        let playerElapsedTime = document.getElementById("playerElapsedTime");
+        let elapsedTimeInterval = null;
+
         // Function to get the query parameter from the URL
         function getQueryParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -136,24 +200,24 @@
                 }
             };
 
-            const album = albumData[albumUrl];
+            currentAlbum = albumData[albumUrl];
 
-            if (album) {
+            if (currentAlbum) {
                 const albumContainer = document.getElementById("albumContainer");
 
                 // Create the album content dynamically
                 albumContainer.innerHTML = `
                     <div class="album-card">
-                        <img src="${album.image}" alt="${album.name}">
-                        <h3>${album.name}</h3>
+                        <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
+                        <h3>${currentAlbum.name}</h3>
                         <ul>
-                            ${album.songs.map(song => {
+                            ${currentAlbum.songs.map((song, index) => {
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
                                 const encodedAlbumUrl = encodeURIComponent(albumUrl);
                                 const encodedSong = encodeURIComponent(song);
                                 return `
                                     <li>
-                                        <i class="fa fa-play play-icon" onclick="playSong('music/${encodedAlbumUrl}/${encodedSong}')"></i>
+                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedAlbumUrl}', '${encodedSong}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
@@ -167,19 +231,73 @@
         }
 
         // Function to play the song
-        function playSong(songPath) {
-            const audio = new Audio(songPath);
+        function playSong(songIndex, albumUrl, song) {
+            if (audio) {
+                audio.pause();
+                audio = null;
+            }
 
-            // Ensure audio is loaded before playing
+            currentSongIndex = songIndex;
+            const songPath = `music/${albumUrl}/${song}`;
+            audio = new Audio(songPath);
+
+            playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
+            playerAlbumImage.src = currentAlbum.image;
+            playerElapsedTime.textContent = "0:00";
+
             audio.oncanplaythrough = () => {
                 audio.play();
+                startElapsedTimeUpdate();
+                playPauseButton.classList.remove("fa-play");
+                playPauseButton.classList.add("fa-pause");
+                playerStrip.style.display = "flex";
             };
 
-            // Handle potential errors
             audio.onerror = () => {
                 alert('Error playing the song. Please check the file path or format.');
             };
+
+            audio.onended = () => {
+                nextSong();
+            };
         }
+
+        function startElapsedTimeUpdate() {
+            if (elapsedTimeInterval) {
+                clearInterval(elapsedTimeInterval);
+            }
+
+            elapsedTimeInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor(audio.currentTime);
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function togglePlayPause() {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.classList.remove("fa-play");
+                playPauseButton.classList.add("fa-pause");
+            } else {
+                audio.pause();
+                playPauseButton.classList.remove("fa-pause");
+                playPauseButton.classList.add("fa-play");
+            }
+        }
+
+        function nextSong() {
+            if (currentSongIndex < currentAlbum.songs.length - 1) {
+                currentSongIndex++;
+                const song = currentAlbum.songs[currentSongIndex];
+                const albumUrl = getQueryParameter('album');
+                playSong(currentSongIndex, encodeURIComponent(albumUrl), encodeURIComponent(song));
+            }
+        }
+
+        playPauseButton.addEventListener("click", togglePlayPause);
+        document.getElementById("nextButton").addEventListener("click", nextSong);
 
         // Get the album name from the URL and load the album
         const albumUrl = getQueryParameter('album');
