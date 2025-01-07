@@ -115,12 +115,15 @@
                         <img src="${album.image}" alt="${album.name}">
                         <h3>${album.name}</h3>
                         <ul>
-                            ${album.songs.map(song => `
-                                <li>
-                                    <a href="music/${album.name}/${song}" download>${song}</a>
-                                    <button class="play-btn" onclick="playSong('music/${album.name}/${song}')">Play</button>
-                                </li>
-                            `).join('')}
+                            ${album.songs.map(song => {
+                                const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
+                                return `
+                                    <li>
+                                        <a href="music/${album.name}/${song}" download>${songName}</a>
+                                        <button class="play-btn" onclick="playSong('music/${album.name}/${song}')">Play</button>
+                                    </li>
+                                `;
+                            }).join('')}
                         </ul>
                     </div>
                 `;
