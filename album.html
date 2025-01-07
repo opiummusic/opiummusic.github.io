@@ -125,22 +125,6 @@
         .player-strip .controls i:hover {
             color: #1f8fff;
         }
-        .enable-audio {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #1f8fff;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-        .enable-audio:hover {
-            background-color: #005bb5;
-        }
     </style>
 </head>
 <body>
@@ -170,9 +154,6 @@
 
     <!-- Audio Element -->
     <audio id="audioPlayer" preload="auto"></audio>
-
-    <!-- Enable Audio Button -->
-    <button class="enable-audio" id="enableAudioButton">Enable Audio</button>
 
     <script>
         let audio = document.getElementById('audioPlayer');
@@ -376,14 +357,6 @@
         playPauseButton.addEventListener("click", togglePlayPause);
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
-
-        // Enable audio on iOS Safari
-        const enableAudioButton = document.getElementById("enableAudioButton");
-        enableAudioButton.addEventListener("click", () => {
-            audio.play();
-            audio.pause(); // Immediately pause after playing to enable future playbacks
-            enableAudioButton.style.display = 'none'; // Hide the enable audio button
-        });
 
         // Get the artist and album name from the URL and load the album
         const artistName = getQueryParameter('artist');
