@@ -135,7 +135,16 @@
         // Function to play the song
         function playSong(songPath) {
             const audio = new Audio(songPath);
-            audio.play();
+
+            // Make sure audio is loaded before playing
+            audio.oncanplaythrough = () => {
+                audio.play();
+            };
+
+            // Handle potential errors
+            audio.onerror = (e) => {
+                alert('Error playing the song: ' + e.message);
+            };
         }
 
         // Get the album name from the URL and load the album
