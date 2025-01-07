@@ -106,7 +106,7 @@
         }
 
         // Function to load the album based on the query
-        function loadAlbum(albumName) {
+        function loadAlbum(albumUrl) {
             const albumData = {
                 "LuvIsRage": {
                     "name": "Luv is rage[deluxe]",
@@ -136,7 +136,7 @@
                 }
             };
 
-            const album = albumData[albumName];
+            const album = albumData[albumUrl];
 
             if (album) {
                 const albumContainer = document.getElementById("albumContainer");
@@ -149,11 +149,11 @@
                         <ul>
                             ${album.songs.map(song => {
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
-                                const encodedAlbumName = encodeURIComponent(album.name);
+                                const encodedAlbumUrl = encodeURIComponent(albumUrl);
                                 const encodedSong = encodeURIComponent(song);
                                 return `
                                     <li>
-                                        <i class="fa fa-play play-icon" onclick="playSong('music/${encodedAlbumName}/${encodedSong}')"></i>
+                                        <i class="fa fa-play play-icon" onclick="playSong('music/${encodedAlbumUrl}/${encodedSong}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
@@ -182,9 +182,9 @@
         }
 
         // Get the album name from the URL and load the album
-        const albumName = getQueryParameter('album');
-        if (albumName) {
-            loadAlbum(albumName);
+        const albumUrl = getQueryParameter('album');
+        if (albumUrl) {
+            loadAlbum(albumUrl);
         } else {
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
