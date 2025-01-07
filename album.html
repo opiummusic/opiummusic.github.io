@@ -171,7 +171,7 @@
             "Lil Uzi": {
                 "LuvIsRage": {
                     "name": "Luv is rage [deluxe]",
-                    "image": "images/LuvIsRage.jpg",
+                    "image": "images/luvisrage.jpeg",
                     "songs": [
                         "20 Min.mp3",
                         "444+222.mp3",
@@ -263,7 +263,7 @@
             currentPlayingElement.classList.add('playing');
 
             currentSongIndex = songIndex;
-            const songPath = `music/${encodeURIComponent(song)}`;
+            const songPath = `music/${albumName}/${encodeURIComponent(song)}`;
             audio.src = songPath;
 
             playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
