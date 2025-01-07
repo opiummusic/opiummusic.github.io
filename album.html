@@ -155,6 +155,21 @@
     <!-- Audio Element -->
     <audio id="audioPlayer" preload="auto"></audio>
 
+    <!-- Unlock AudioContext for Safari and Chrome -->
+    <script>
+        function unlockAudioContext(audioCtx) {
+            if (audioCtx.state !== 'suspended') return;
+            const b = document.body;
+            const events = ['touchstart','touchend', 'mousedown','keydown'];
+            events.forEach(e => b.addEventListener(e, unlock, false));
+            function unlock() { audioCtx.resume().then(clean); }
+            function clean() { events.forEach(e => b.removeEventListener(e, unlock)); }
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        unlockAudioContext(audioCtx);
+    </script>
+
     <script>
         let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
