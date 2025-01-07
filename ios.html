@@ -224,7 +224,12 @@
         }
 
         function loadAlbum(artistName, albumName) {
-            currentAlbum = albumData[artistName] && albumData[albumName];
+            currentAlbum = albumData[artistName] && albumData[artistName][albumName];
+
+            // Log the artist name and album name to debug
+            console.log('Artist:', artistName);
+            console.log('Album:', albumName);
+            console.log('Album Data:', currentAlbum);
 
             if (currentAlbum) {
                 const albumContainer = document.getElementById("albumContainer");
