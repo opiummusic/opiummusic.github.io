@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music</title>
-    <link rel="icon" type="image/x-icon" href="/facicon/icon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon/icon.png">
     <style>
         /* Global Styles */
         body {
@@ -182,5 +182,21 @@
             setTimeout(showSlides, 3000); // Change slide every 3 seconds
         }
     </script>
+    <script>
+    function checkDeviceAndBrowser() {
+        const userAgent = navigator.userAgent;
+        const isIphone = /iPhone/.test(userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+
+        if (!isIphone || !isSafari) {
+            alert("This site is only accessible on iPhone using Safari.");
+            window.location.href = "https://www.apple.com/safari/"; // Redirect to Safari's page or a custom page
+        }
+    }
+
+
+    checkDeviceAndBrowser();
+</script>
+
 </body>
 </html>
