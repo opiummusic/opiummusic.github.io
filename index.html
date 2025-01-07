@@ -7,8 +7,8 @@
     <style>
         /* Global Styles */
         body {
-            background: linear-gradient(135deg, #0d1117, #1f2937);
-            color: #e5e7eb;
+            background: #000000; /* Pure black background */
+            color: #ffffff; /* Pure white text */
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -18,48 +18,31 @@
             height: 100vh;
         }
 
-        /* Centered container */
+        /* Container */
         .container {
             text-align: center;
             padding: 20px;
-            border: 1px solid #374151;
+            border: 1px solid #ffffff; /* White border */
             border-radius: 10px;
-            background: #1f2937;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            background: #000000; /* Black background */
+            width: 90%;
+            max-width: 600px;
         }
 
-        /* Header */
-        h1 {
-            color: #60a5fa;
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        p {
-            font-size: 1rem;
-            color: #9ca3af;
-            margin-bottom: 20px;
-        }
-
-        /* Button */
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            font-size: 1rem;
+        /* Opium Label Logo */
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             color: #ffffff;
-            background: #2563eb;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffffff;
+            display: inline-block;
+            padding-bottom: 10px;
         }
 
-        .btn:hover {
-            background: #1d4ed8;
-        }
-
-        /* Slideshow Container */
+        /* Slideshow */
         .slideshow-container {
             position: relative;
             max-width: 100%;
@@ -69,7 +52,7 @@
             border-radius: 10px;
         }
 
-        /* Slides */
+        /* Slide Images */
         .slide {
             display: none;
         }
@@ -86,17 +69,35 @@
             left: 50%;
             transform: translateX(-50%);
             color: #ffffff;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 1.2rem;
         }
 
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1rem;
+            color: #000000;
+            background: #ffffff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #e5e5e5;
+        }
+
         /* Tooltip */
         .tooltip {
             display: none;
-            background: #374151;
-            color: #e5e7eb;
+            background: #ffffff;
+            color: #000000;
             padding: 10px;
             border-radius: 5px;
             position: absolute;
@@ -114,21 +115,34 @@
 </head>
 <body>
     <div class="container">
-        <h1>Opium Music Player</h1>
+        <!-- Logo -->
+        <div class="logo">Opium</div>
         <p>Experience the joy of music with over 30+ songs at your fingertips.</p>
         
         <!-- Slideshow -->
         <div class="slideshow-container">
             <div class="slide">
-                <img src="https://via.placeholder.com/800x400?text=Music+1" alt="Slide 1">
+                <img src="images/dielit.jpeg" alt="Die Lit">
                 <div class="slide-text">30+ Songs</div>
             </div>
             <div class="slide">
-                <img src="https://via.placeholder.com/800x400?text=Music+2" alt="Slide 2">
+                <img src="images/welovetecca.jpeg" alt="We Love Tecca">
                 <div class="slide-text">30+ Songs</div>
             </div>
             <div class="slide">
-                <img src="https://via.placeholder.com/800x400?text=Music+3" alt="Slide 3">
+                <img src="images/x.jpeg" alt="X">
+                <div class="slide-text">30+ Songs</div>
+            </div>
+            <div class="slide">
+                <img src="images/greatchoas.jpeg" alt="Great Chaos">
+                <div class="slide-text">30+ Songs</div>
+            </div>
+            <div class="slide">
+                <img src="images/lyfe.jpeg" alt="Lyfe">
+                <div class="slide-text">30+ Songs</div>
+            </div>
+            <div class="slide">
+                <img src="images/luvisrage.jpeg" alt="Luv Is Rage">
                 <div class="slide-text">30+ Songs</div>
             </div>
         </div>
