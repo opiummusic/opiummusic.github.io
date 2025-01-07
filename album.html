@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music Player</title>
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             background: #000000;
@@ -53,10 +55,14 @@
             background-color: #444444;
         }
         .play-icon {
-            color: #1f8fff;
+            color: #ffffff;
             font-size: 1.5rem;
             margin-right: 10px;
             cursor: pointer;
+            transition: color 0.3s;
+        }
+        .play-icon:hover {
+            color: #1f8fff;
         }
         .song-name {
             flex-grow: 1;
@@ -129,7 +135,7 @@
                                 const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
                                 return `
                                     <li>
-                                        <span class="play-icon" onclick="playSong('music/${album.name}/${song}')">▶</span>
+                                        <i class="fa fa-play play-icon" onclick="playSong('music/${album.name}/${song}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
