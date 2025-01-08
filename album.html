@@ -33,7 +33,7 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-let audio = document.getElementById('audioPlayer');
+        let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
         let currentAlbum = null;
         let playPauseButton = document.getElementById("playPauseButton");
@@ -43,8 +43,8 @@ let audio = document.getElementById('audioPlayer');
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
 
-        let albumData = null; // Declare albumData globally
-
+        let albumData = null;
+    
         fetch('music/albums.json')
           .then(response => {
             if (!response.ok) {
@@ -99,11 +99,9 @@ let audio = document.getElementById('audioPlayer');
                 document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
             }
         }
+       
 
         function playSong(songIndex, artistName, albumName, song, songElementId) {
-            /*if (audio) {
-                audio.pause();
-            }*/
 
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
@@ -116,7 +114,7 @@ let audio = document.getElementById('audioPlayer');
             currentSongIndex = songIndex;
             const songPath = `music/${albumName}/${encodeURIComponent(song)}`;
             audio.src = songPath;
-
+            localStorage.SongName = songPath;
             playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
             playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
@@ -169,6 +167,7 @@ let audio = document.getElementById('audioPlayer');
 
             elapsedTimeInterval = setInterval(() => {
                 const elapsedSeconds = Math.floor(audio.currentTime);
+                localStorage.SongTime = elapsedSeconds;
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
                 playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
