@@ -33,7 +33,7 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-        let audio = document.getElementById('audioPlayer');
+let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
         let currentAlbum = null;
         let playPauseButton = document.getElementById("playPauseButton");
@@ -43,20 +43,29 @@
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
 
-        fetch('music/albums.json')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
-    }
-    return response.json();
-  })
-  .then(data => {
-    const albumData = data; 
-  })
-  .catch(error => {
-    console.error('Error fetching JSON:', error);
-  });
+        let albumData = null; // Declare albumData globally
 
+        fetch('music/albums.json')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(data => {
+            albumData = data;
+
+            const artistName = getQueryParameter('artist');
+            const albumName = getQueryParameter('album');
+            if (artistName && albumName) {
+              loadAlbum(artistName, albumName);
+            } else {
+              document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching JSON:', error);
+          });
 
         function getQueryParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -64,12 +73,7 @@
         }
 
         function loadAlbum(artistName, albumName) {
-            currentAlbum = albumData[artistName] && albumData[artistName][albumName];
-
-            // Log the artist name and album name to debug
-            console.log('Artist:', artistName);
-            console.log('Album:', albumName);
-            console.log('Album Data:', currentAlbum);
+            currentAlbum = albumData?.[artistName]?.[albumName];
 
             if (currentAlbum) {
                 const albumContainer = document.getElementById("albumContainer");
@@ -80,12 +84,10 @@
                         <h3>${currentAlbum.name}</h3>
                         <ul>
                             ${currentAlbum.songs.map((song, index) => {
-                                const songName = song.replace(".mp3", ""); // Remove .mp3 from the song name
-                                const encodedArtistName = encodeURIComponent(artistName);
-                                const encodedAlbumName = encodeURIComponent(albumName);
+                                const songName = song.replace(".mp3", "");
                                 return `
                                     <li id="song-${index}">
-                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${encodedArtistName}', '${encodedAlbumName}', '${song}', 'song-${index}')"></i>
+                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
                                     </li>
                                 `;
