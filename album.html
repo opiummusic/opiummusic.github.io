@@ -6,6 +6,7 @@
     <title>Opium Music Player</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/styles.css" rel="stylesheet">
+    <link href="assets/playstrip.css" rel="stylesheet">
 </head>
 <body>
     <button class="back-button" onclick="window.location.href='play.html'">
@@ -115,7 +116,7 @@
             const songPath = `music/${albumName}/${encodeURIComponent(song)}`;
             audio.src = songPath;
             localStorage.SongName = songPath;
-            playerSongName.textContent = song.replace(".mp3", ""); // Display song name without .mp3
+            playerSongName.textContent = song.replace(".mp3", ""); 
             playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
 

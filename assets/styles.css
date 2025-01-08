@@ -77,42 +77,4 @@ body {
         a:hover {
             text-decoration: underline;
         }
-        .player-strip {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #1f1f1f;
-            padding: 10px;
-            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .player-strip img {
-            width: 50px;
-            height: 50px;
-            border-radius: 6px;
-            margin-right: 10px;
-        }
-        .player-strip .song-info {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-        }
-        .player-strip .song-info span {
-            margin-left: 10px;
-        }
-        .player-strip .controls {
-            display: flex;
-            align-items: center;
-        }
-        .player-strip .controls i {
-            font-size: 1.5rem;
-            margin: 0 10px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .player-strip .controls i:hover {
-            color: #1f8fff;
-        }
+
