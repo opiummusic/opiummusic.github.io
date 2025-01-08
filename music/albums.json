@@ -1,84 +1,82 @@
-
 {
-            "Lil Uzi": {
-                "LuvIsRage": {
-                    "name": "Luv is rage [deluxe]",
-                    "image": "images/luvisrage.jpeg",
-                    "songs": [
-                        "20 Min.mp3",
-                        "444+222.mp3",
-                        "Dark Queen.mp3",
-                        "Diamonds All on My Wrist.mp3",
-                        "Early 20 Rager.mp3",
-                        "Feelings Mutual.mp3",
-                        "For Real.mp3",
-                        "How to Talk.mp3",
-                        "Loaded.mp3",
-                        "Malfunction.mp3",
-                        "Neon Guts (feat. Pharrell Williams).mp3",
-                        "No Sleep Leak.mp3",
-                        "Pretty Mami.mp3",
-                        "Sauce It Up.mp3",
-                        "Skir Skirr.mp3",
-                        "The Way Life Goes (feat. Oh Wonder).mp3",
-                        "Two®.mp3",
-                        "UnFazed (feat. The Weeknd).mp3",
-                        "X.mp3",
-                        "XO Tour Llif3.mp3"
-                    ]
-                }
-            },
-            "Ken Carson": {
-                "GreatChoas": {
-                    "name": "Great Choas [deluxe]",
-                    "image": "images/greatchoas.jpeg",
-                    "songs": [
-                            "Fighting My Demons.mp3",
-                            "Green Room.mp3",
-                            "Hardcore.mp3",
-                            "It's Over.mp3",
-                            "Jennifer's Body.mp3",
-                            "Like This (ft. Lil Uzi Vert & Destroy Lonely).mp3",
-                            "Lose It.mp3",
-                            "Me N My Kup.mp3",
-                            "Nightcore 2.mp3",
-                            "Nightcore.mp3",
-                            "Overtime.mp3",
-                            "Paranoid (ft. Destroy Lonely).mp3",
-                            "Pots.mp3",
-                            "Rockstar Lifestyle.mp3",
-                            "Singapore (ft. Destroy Lonely).mp3",
-                            "Succubus.mp3",
-                            "Vampire Hour.mp3"
-                    ]
-                }
-            },
-            "Lil Tecca": {
-                "WeLoveTecca": {
-                    "name": "We Love Tecca",
-                    "image": "images/welovetecca.jpeg",
-                      "songs": [
-                        "Amigo.mp3",
-                        "Bossanova.mp3",
-                        "Count Me Out.mp3",
-                        "DUI.mp3",
-                        "Did It Again.mp3",
-                        "Glo Up.mp3",
-                        "Left, Right.mp3",
-                        "Love Me.mp3",
-                        "Molly Girl.mp3",
-                        "Out Of Luck.mp3",
-                        "Phenom.mp3",
-                        "Senorita.mp3",
-                        "Shots.mp3",
-                        "Sidenote.mp3",
-                        "The Score.mp3",
-                        "Weatherman.mp3",
-                        "Ransom (ft. Juice Wrld).mp3"
-                      ]
-                }
-            },
-            
+  "Lil Uzi": {
+    "LuvIsRage": {
+      "name": "Luv is rage [deluxe]",
+      "image": "images/luvisrage.jpeg",
+      "songs": [
+        "20 Min.mp3",
+        "444+222.mp3",
+        "Dark Queen.mp3",
+        "Diamonds All on My Wrist.mp3",
+        "Early 20 Rager.mp3",
+        "Feelings Mutual.mp3",
+        "For Real.mp3",
+        "How to Talk.mp3",
+        "Loaded.mp3",
+        "Malfunction.mp3",
+        "Neon Guts (feat. Pharrell Williams).mp3",
+        "No Sleep Leak.mp3",
+        "Pretty Mami.mp3",
+        "Sauce It Up.mp3",
+        "Skir Skirr.mp3",
+        "The Way Life Goes (feat. Oh Wonder).mp3",
+        "Two®.mp3",
+        "UnFazed (feat. The Weeknd).mp3",
+        "X.mp3",
+        "XO Tour Llif3.mp3"
+      ]
+    }
+  },
+  "Ken Carson": {
+    "GreatChoas": {
+      "name": "Great Choas [deluxe]",
+      "image": "images/greatchoas.jpeg",
+      "songs": [
+        "Fighting My Demons.mp3",
+        "Green Room.mp3",
+        "Hardcore.mp3",
+        "It's Over.mp3",
+        "Jennifer's Body.mp3",
+        "Like This (ft. Lil Uzi Vert & Destroy Lonely).mp3",
+        "Lose It.mp3",
+        "Me N My Kup.mp3",
+        "Nightcore 2.mp3",
+        "Nightcore.mp3",
+        "Overtime.mp3",
+        "Paranoid (ft. Destroy Lonely).mp3",
+        "Pots.mp3",
+        "Rockstar Lifestyle.mp3",
+        "Singapore (ft. Destroy Lonely).mp3",
+        "Succubus.mp3",
+        "Vampire Hour.mp3"
+      ]
+    }
+  },
+  "Lil Tecca": {
+    "WeLoveTecca": {
+      "name": "We Love Tecca",
+      "image": "images/welovetecca.jpeg",
+      "songs": [
+        "Amigo.mp3",
+        "Bossanova.mp3",
+        "Count Me Out.mp3",
+        "DUI.mp3",
+        "Did It Again.mp3",
+        "Glo Up.mp3",
+        "Left, Right.mp3",
+        "Love Me.mp3",
+        "Molly Girl.mp3",
+        "Out Of Luck.mp3",
+        "Phenom.mp3",
+        "Senorita.mp3",
+        "Shots.mp3",
+        "Sidenote.mp3",
+        "The Score.mp3",
+        "Weatherman.mp3",
+        "Ransom (ft. Juice Wrld).mp3"
+      ]
+    }
+  },
   "Yeat": {
     "Lyfe": {
       "name": "Lyfe",
@@ -99,6 +97,4 @@
       ]
     }
   }
-
-
-        }
+}
