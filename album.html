@@ -129,6 +129,7 @@ let audio = document.getElementById('audioPlayer');
                 playerStrip.style.display = "flex";
             }).catch(error => {
                 console.error('Error playing the audio:', error);
+                console.log(songPath)
             });
 
             audio.onerror = () => {
