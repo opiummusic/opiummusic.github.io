@@ -77,5 +77,28 @@
                         "Ransom (ft. Juice Wrld).mp3"
                       ]
                 }
-            }
+            },
+            
+  "Yeat": {
+    "Lyfe": {
+      "name": "Lyfe",
+      "image": "images/lyfe.jpeg",
+      "songs": [
+        "Can’t stop it.mp3",
+        "Comë on.mp3",
+        "Flawlëss (feat. Lil Uzi Vert).mp3",
+        "Got it all.mp3",
+        "Holy 1.mp3",
+        "Killin ëm.mp3",
+        "Krank.mp3",
+        "Out thë way.mp3",
+        "Systëm.mp3",
+        "Talk.mp3",
+        "Up off X.mp3",
+        "Wat it feel lykë.mp3"
+      ]
+    }
+  }
+
+
         }
