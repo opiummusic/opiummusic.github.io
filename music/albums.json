@@ -99,5 +99,30 @@
         "Wat it feel lyke.mp3"
       ]
     }
+  },
+  "Playboi Carti": {
+    "IAmMusic": {
+      "name": "I am music [leak]",
+      "image": "images/I Am Music.jpg",
+      "songs": [
+        "2024.mp3",
+        "ALL RED.mp3",
+        "BACKR00MS (ft. Travis Scott).mp3",
+        "COCAINE NOSE.mp3",
+        "CRUSH (ft. Travis Scott).mp3",
+        "DIFFERENT DAY.mp3",
+        "EVILJ0RDAN.mp3",
+        "G-WAGON.mp3",
+        "H00DBYAIR.mp3",
+        "KETAMINE.mp3",
+        "LOSE YOU (ft. The Weeknd).mp3",
+        "MOJO JOJO.mp3",
+        "OMERTA.mp3",
+        "POP OUT.mp3",
+        "WALK.mp3",
+        "WHATS MY MF NAME.mp3",
+        "YOUNG VAMP LOVE.mp3"
+      ]
+    }
   }
 }
