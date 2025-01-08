@@ -120,7 +120,6 @@
             playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
 
-            // Play the audio directly within the user-initiated event
             audio.play().then(() => {
                 startElapsedTimeUpdate();
                 playPauseButton.classList.remove("fa-play");
