@@ -67,7 +67,15 @@
                 playlists.push({ name: playlistName, songs: [] });
                 localStorage.setItem('playlists', JSON.stringify(playlists));
                 loadPlaylists();
+                updatePlaylistDropdown();
             }
+        }
+
+        function updatePlaylistDropdown() {
+            const playlistDropdown = document.getElementById('playlistDropdown');
+            playlistDropdown.innerHTML = playlists.map((playlist, index) => `
+                <option value="${index}">${playlist.name}</option>
+            `).join('');
         }
 
         function playPlaylist(index) {
@@ -146,6 +154,7 @@
         document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
 
         loadPlaylists();
+        updatePlaylistDropdown();
     </script>
 </body>
 </html>
