@@ -119,6 +119,8 @@
             playerSongName.textContent = song.replace(".mp3", ""); 
             playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
+            document.title = playerSongName + " - " + decodeURIComponent(artistName);
+
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
