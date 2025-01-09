@@ -151,9 +151,25 @@
         let playerAlbumImage = document.getElementById("playerAlbumImage");
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
+        let db;
         
-        // Initialize playlists
-        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+        // Open IndexedDB
+        const request = indexedDB.open('playlistDB', 1);
+
+        request.onerror = (event) => {
+            console.error('Database error:', event.target.errorCode);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            loadPlaylists();
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
 
         let albumData = null;
 
@@ -339,15 +355,26 @@
             playlistList.innerHTML = '';
 
             // Add playlists to the modal
-            playlists.forEach((playlist, idx) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = playlist.name;
-                listItem.onclick = () => {
-                    addToPlaylist(song, artistName, albumName, albumImage, idx);
-                    closeModal();
-                };
-                playlistList.appendChild(listItem);
-            });
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                playlists.forEach((playlist, idx) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = playlist.name;
+                    listItem.onclick = () => {
+                        addToPlaylist(song, artistName, albumName, albumImage, playlist.id);
+                        closeModal();
+                    };
+                    playlistList.appendChild(listItem);
+                });
+            };
+
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
 
             modal.style.display = "block";
         }
@@ -357,22 +384,39 @@
             modal.style.display = "none";
         }
 
-        function addToPlaylist(song, artistName, albumName, albumImage, playlistIndex) {
-            const playlist = playlists[playlistIndex];
+        function addToPlaylist(song, artistName, albumName, albumImage, playlistId) {
+            const transaction = db.transaction(['playlists'], 'readwrite');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.get(playlistId);
 
-            if (playlist) {
-                playlist.songs.push({
-                    name: song.replace(".mp3", ""),
-                    artist: artistName,
-                    album: albumName,
-                    albumArt: albumImage,
-                    path: `music/${albumName}/${encodeURIComponent(song)}`
-                });
-                localStorage.setItem('playlists', JSON.stringify(playlists));
-                alert('Song added to playlist!');
-            } else {
-                alert('Invalid playlist selection!');
-            }
+            request.onsuccess = (event) => {
+                const playlist = event.target.result;
+
+                if (playlist) {
+                    playlist.songs.push({
+                        name: song.replace(".mp3", ""),
+                        artist: artistName,
+                        album: albumName,
+                        albumArt: albumImage,
+                        path: `music/${albumName}/${encodeURIComponent(song)}`
+                    });
+                    const updateRequest = objectStore.put(playlist);
+
+                    updateRequest.onsuccess = () => {
+                        alert('Song added to playlist!');
+                    };
+
+                    updateRequest.onerror = (event) => {
+                        console.error('Error updating playlist:', event.target.errorCode);
+                    };
+                } else {
+                    alert('Invalid playlist selection!');
+                }
+            };
+
+            request.onerror = (event) => {
+                console.error('Error retrieving playlist:', event.target.errorCode);
+            };
         }
     </script>
 </body>
