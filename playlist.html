@@ -19,7 +19,7 @@
         <ul id="playlists">
             <!-- Playlists will be dynamically loaded here -->
         </ul>
-        <button onclick="createNewPlaylist()">Create New Playlist</button>
+        <button onclick="checkPersistentStorageAndCreatePlaylist()">Create New Playlist</button>
     </div>
 
     <div class="player-strip" id="playerStrip" style="display: none;">
@@ -40,46 +40,102 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
-        let currentPlaylistIndex = 0;
-        let currentSongIndex = 0;
-        let audio = document.getElementById('audioPlayer');
-        let playPauseButton = document.getElementById("playPauseButton");
-        let playerStrip = document.getElementById("playerStrip");
-        let playerSongName = document.getElementById("playerSongName");
-        let playerAlbumImage = document.getElementById("playerAlbumImage");
-        let playerElapsedTime = document.getElementById("playerElapsedTime");
-        let elapsedTimeInterval = null;
+        let db;
+        const request = indexedDB.open('playlistDB', 1);
+
+        request.onerror = (event) => {
+            console.error('Database error:', event.target.errorCode);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            loadPlaylists();
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
 
         function loadPlaylists() {
-            const playlistContainer = document.getElementById('playlists');
-            playlistContainer.innerHTML = playlists.map((playlist, index) => `
-                <li>
-                    <span>${playlist.name}</span>
-                    <button onclick="playPlaylist(${index})">Play</button>
-                </li>
-            `).join('');
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const playlistContainer = document.getElementById('playlists');
+                playlistContainer.innerHTML = playlists.map((playlist, index) => `
+                    <li>
+                        <span>${playlist.name}</span>
+                        <button onclick="playPlaylist(${index})">Play</button>
+                    </li>
+                `).join('');
+            };
+
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
+        }
+
+        function checkPersistentStorageAndCreatePlaylist() {
+            if (navigator.storage && navigator.storage.persist) {
+                navigator.storage.persist().then((persistent) => {
+                    if (persistent) {
+                        console.log("Storage will not be cleared except by explicit user action");
+                        createNewPlaylist();
+                    } else {
+                        console.log("Storage may be cleared by the UA under storage pressure.");
+                        alert("Persistent storage is not available. Please download the app to avoid losing your playlists.");
+                        window.location.href = 'https://opiummusic.github.io';
+                    }
+                });
+            } else {
+                console.log("Persistent storage API is not supported by this browser.");
+                alert("Persistent storage is not supported by this browser. Please download the app to avoid losing your playlists.");
+                window.location.href = 'https://opiummusic.github.io';
+            }
         }
 
         function createNewPlaylist() {
             const playlistName = prompt("Enter playlist name:");
             if (playlistName) {
-                playlists.push({ name: playlistName, songs: [] });
-                localStorage.setItem('playlists', JSON.stringify(playlists));
-                loadPlaylists();
+                const transaction = db.transaction(['playlists'], 'readwrite');
+                const objectStore = transaction.objectStore('playlists');
+                const request = objectStore.add({ name: playlistName, songs: [] });
+
+                request.onsuccess = () => {
+                    console.log('Playlist added to the database');
+                    loadPlaylists();
+                };
+
+                request.onerror = (event) => {
+                    console.error('Error adding playlist:', event.target.errorCode);
+                };
             }
         }
 
         function playPlaylist(index) {
-            currentPlaylistIndex = index;
-            currentSongIndex = 0;
-            playSongFromPlaylist();
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const playlist = playlists[index];
+                currentPlaylistIndex = index;
+                currentSongIndex = 0;
+                playSongFromPlaylist(playlist);
+            };
+
+            request.onerror = (event) => {
+                console.error('Error retrieving playlist:', event.target.errorCode);
+            };
         }
 
-        function playSongFromPlaylist() {
-            const playlist = playlists[currentPlaylistIndex];
+        function playSongFromPlaylist(playlist) {
             const song = playlist.songs[currentSongIndex];
-
             if (song) {
                 audio.src = song.path;
                 playerSongName.textContent = song.name;
@@ -145,7 +201,6 @@
         document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
         document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
 
-        loadPlaylists();
     </script>
 </body>
 </html>
