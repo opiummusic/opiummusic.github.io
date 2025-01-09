@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,6 +44,9 @@
         let playerAlbumImage = document.getElementById("playerAlbumImage");
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
+        
+        // Initialize playlists
+        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
 
         let albumData = null;
     
@@ -75,34 +77,34 @@
             return urlParams.get(name);
         }
 
-function loadAlbum(artistName, albumName) {
-    currentAlbum = albumData?.[artistName]?.[albumName];
+        function loadAlbum(artistName, albumName) {
+            currentAlbum = albumData?.[artistName]?.[albumName];
 
-    if (currentAlbum) {
-        const albumContainer = document.getElementById("albumContainer");
+            if (currentAlbum) {
+                const albumContainer = document.getElementById("albumContainer");
 
-        albumContainer.innerHTML = `
-            <div class="album-card">
-                <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
-                <h3>${currentAlbum.name}</h3>
-                <ul>
-                    ${currentAlbum.songs.map((song, index) => {
-                        const songName = song.replace(".mp3", "");
-                        return `
-                            <li id="song-${index}">
-                                <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
-                                <span class="song-name">${songName}</span>
-                                <button onclick="addToPlaylist('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}')">Add to Playlist</button>
-                            </li>
-                        `;
-                    }).join('')}
-                </ul>
-            </div>
-        `;
-    } else {
-        document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
-    }
-}
+                albumContainer.innerHTML = `
+                    <div class="album-card">
+                        <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
+                        <h3>${currentAlbum.name}</h3>
+                        <ul>
+                            ${currentAlbum.songs.map((song, index) => {
+                                const songName = song.replace(".mp3", "");
+                                return `
+                                    <li id="song-${index}">
+                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
+                                        <span class="song-name">${songName}</span>
+                                        <button onclick="addToPlaylist('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}')">Add to Playlist</button>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            } else {
+                document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
+            }
+        }
        
 
         function playSong(songIndex, artistName, albumName, song, songElementId) {
@@ -222,40 +224,40 @@ function loadAlbum(artistName, albumName) {
         } else {
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
-function addToPlaylist(song, artistName, albumName, albumImage) {
-    const playlistDropdown = document.createElement('select');
-    playlistDropdown.id = 'playlistDropdown';
-    playlistDropdown.innerHTML = playlists.map((playlist, index) => `
-        <option value="${index}">${playlist.name}</option>
-    `).join('');
 
-    const addToPlaylistButton = document.createElement('button');
-    addToPlaylistButton.textContent = 'Add to Playlist';
-    addToPlaylistButton.onclick = () => {
-        const selectedIndex = playlistDropdown.value;
-        const playlist = playlists[selectedIndex];
+        function addToPlaylist(song, artistName, albumName, albumImage) {
+            const playlistDropdown = document.createElement('select');
+            playlistDropdown.id = 'playlistDropdown';
+            playlistDropdown.innerHTML = playlists.map((playlist, index) => `
+                <option value="${index}">${playlist.name}</option>
+            `).join('');
 
-        if (playlist) {
-            playlist.songs.push({
-                name: song.replace(".mp3", ""),
-                artist: artistName,
-                album: albumName,
-                albumArt: albumImage,
-                path: `music/${albumName}/${encodeURIComponent(song)}`
-            });
-            localStorage.setItem('playlists', JSON.stringify(playlists));
-            alert('Song added to playlist!');
-        } else {
-            alert('Invalid playlist selection!');
+            const addToPlaylistButton = document.createElement('button');
+            addToPlaylistButton.textContent = 'Add to Playlist';
+            addToPlaylistButton.onclick = () => {
+                const selectedIndex = playlistDropdown.value;
+                const playlist = playlists[selectedIndex];
+
+                if (playlist) {
+                    playlist.songs.push({
+                        name: song.replace(".mp3", ""),
+                        artist: artistName,
+                        album: albumName,
+                        albumArt: albumImage,
+                        path: `music/${albumName}/${encodeURIComponent(song)}`
+                    });
+                    localStorage.setItem('playlists', JSON.stringify(playlists));
+                    alert('Song added to playlist!');
+                } else {
+                    alert('Invalid playlist selection!');
+                }
+            };
+
+            const dialog = document.createElement('div');
+            dialog.appendChild(playlistDropdown);
+            dialog.appendChild(addToPlaylistButton);
+            document.body.appendChild(dialog);
         }
-    };
-
-    const dialog = document.createElement('div');
-    dialog.appendChild(playlistDropdown);
-    dialog.appendChild(addToPlaylistButton);
-    document.body.appendChild(dialog);
-}
-
     </script>
 </body>
 </html>
