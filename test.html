@@ -180,7 +180,7 @@
                 const playlistGrid = document.getElementById('playlistGrid');
                 playlistGrid.innerHTML = playlists.map((playlist) => `
                     <div class="album-card playlist-card">
-                        <img src="${playlist.image}" alt="${playlist.name}">
+                        <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
