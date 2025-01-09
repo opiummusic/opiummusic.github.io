@@ -38,7 +38,7 @@
 
         .playlist-header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
         }
 
@@ -52,7 +52,7 @@
             border: none;
             color: #ffffff;
             padding: 10px;
-            font-size: 2rem;
+            font-size: 3rem;
             border-radius: 8px;
             cursor: pointer;
             width: 150px;
@@ -61,6 +61,11 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            margin-top: 10px;
+        }
+
+        .album-container h2 {
+            text-align: left;
         }
 
         .album-grid {
