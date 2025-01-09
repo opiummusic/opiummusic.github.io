@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opium Music Player - Playlists</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/styles.css" rel="stylesheet">
+    <link href="assets/playstrip.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon/icon.png">
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='index.html'">
+        <i class="fa fa-arrow-left"></i>
+    </button>
+
+    <div class="playlist-container" id="playlistContainer">
+        <h2>Playlists</h2>
+        <ul id="playlists">
+            <!-- Playlists will be dynamically loaded here -->
+        </ul>
+        <button onclick="createNewPlaylist()">Create New Playlist</button>
+    </div>
+
+    <div class="player-strip" id="playerStrip" style="display: none;">
+        <div class="song-info">
+            <img id="playerAlbumImage" src="" alt="Album Art">
+            <div>
+                <span id="playerSongName"></span>
+                <span id="playerElapsedTime">0:00</span>
+            </div>
+        </div>
+        <div class="controls">
+            <i class="fa fa-backward" id="previousButton"></i>
+            <i class="fa fa-play" id="playPauseButton"></i>
+            <i class="fa fa-forward" id="nextButton"></i>
+        </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+        let currentPlaylistIndex = 0;
+        let currentSongIndex = 0;
+        let audio = document.getElementById('audioPlayer');
+        let playPauseButton = document.getElementById("playPauseButton");
+        let playerStrip = document.getElementById("playerStrip");
+        let playerSongName = document.getElementById("playerSongName");
+        let playerAlbumImage = document.getElementById("playerAlbumImage");
+        let playerElapsedTime = document.getElementById("playerElapsedTime");
+        let elapsedTimeInterval = null;
+
+        function loadPlaylists() {
+            const playlistContainer = document.getElementById('playlists');
+            playlistContainer.innerHTML = playlists.map((playlist, index) => `
+                <li>
+                    <span>${playlist.name}</span>
+                    <button onclick="playPlaylist(${index})">Play</button>
+                </li>
+            `).join('');
+        }
+
+        function createNewPlaylist() {
+            const playlistName = prompt("Enter playlist name:");
+            if (playlistName) {
+                playlists.push({ name: playlistName, songs: [] });
+                localStorage.setItem('playlists', JSON.stringify(playlists));
+                loadPlaylists();
+            }
+        }
+
+        function playPlaylist(index) {
+            currentPlaylistIndex = index;
+            currentSongIndex = 0;
+            playSongFromPlaylist();
+        }
+
+        function playSongFromPlaylist() {
+            const playlist = playlists[currentPlaylistIndex];
+            const song = playlist.songs[currentSongIndex];
+
+            if (song) {
+                audio.src = song.path;
+                playerSongName.textContent = song.name;
+                playerAlbumImage.src = song.albumArt;
+                playerElapsedTime.textContent = "0:00";
+                document.title = song.name + " - " + song.artist;
+
+                audio.play().then(() => {
+                    startElapsedTimeUpdate();
+                    playPauseButton.classList.remove("fa-play");
+                    playPauseButton.classList.add("fa-pause");
+                    playerStrip.style.display = "flex";
+                }).catch(error => {
+                    console.error('Error playing the audio:', error);
+                });
+
+                audio.onended = () => {
+                    nextSongInPlaylist();
+                };
+            }
+        }
+
+        function startElapsedTimeUpdate() {
+            if (elapsedTimeInterval) {
+                clearInterval(elapsedTimeInterval);
+            }
+
+            elapsedTimeInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor(audio.currentTime);
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function togglePlayPause() {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.classList.remove("fa-play");
+                playPauseButton.classList.add("fa-pause");
+            } else {
+                audio.pause();
+                playPauseButton.classList.remove("fa-pause");
+                playPauseButton.classList.add("fa-play");
+            }
+        }
+
+        function nextSongInPlaylist() {
+            if (currentSongIndex < playlists[currentPlaylistIndex].songs.length - 1) {
+                currentSongIndex++;
+                playSongFromPlaylist();
+            }
+        }
+
+        function previousSongInPlaylist() {
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+                playSongFromPlaylist();
+            }
+        }
+
+        playPauseButton.addEventListener("click", togglePlayPause);
+        document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
+        document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
+
+        loadPlaylists();
+    </script>
+</body>
+</html>
