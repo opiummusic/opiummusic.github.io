@@ -29,17 +29,11 @@
 
         .playlist-container, .album-container {
             padding: 20px;
-            text-align: left;
         }
 
-        .playlist-container {
-            border-bottom: 1px solid #ffffff;
-        }
-
-        .playlist-header {
+        .playlist-header, .album-container h2 {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .playlist-header h2, .album-container h2 {
@@ -51,17 +45,20 @@
             background: #1f1f1f;
             border: none;
             color: #ffffff;
-            padding: 10px;
             font-size: 3rem;
             border-radius: 8px;
             cursor: pointer;
-            width: 150px;
-            height: 150px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-            margin-top: 10px;
+            width: 150px;
+            height: 150px;
+            margin-left: 20px;
+        }
+
+        .album-container h2 {
+            text-align: left;
         }
 
         .album-grid {
@@ -77,6 +74,8 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             text-align: center;
+            width: 150px;
+            height: 150px;
         }
 
         .album-card img {
@@ -103,8 +102,8 @@
     </style>
 </head>
 <body>
-    <div class="header">Opium Music Player</div>
     <div class="loading-screen" id="loadingScreen">Loading Songs...</div>
+    <div class="header">Opium Music Player</div>
     <div class="playlist-container" id="playlistContainer">
         <div class="playlist-header">
             <h2>Playlists:</h2>
