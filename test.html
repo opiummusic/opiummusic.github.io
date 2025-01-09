@@ -29,7 +29,7 @@
 
         .playlist-container, .album-container {
             padding: 20px;
-            text-align: center;
+            text-align: left;
         }
 
         .playlist-container {
@@ -39,7 +39,7 @@
         .playlist-header {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .playlist-header h2, .album-container h2 {
@@ -62,10 +62,6 @@
             justify-content: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             margin-top: 10px;
-        }
-
-        .album-container h2 {
-            text-align: left;
         }
 
         .album-grid {
@@ -108,9 +104,9 @@
 </head>
 <body>
     <div class="loading-screen" id="loadingScreen">Loading Songs...</div>
-    <div class="header">Opium Music Player</div>
     <div class="playlist-container" id="playlistContainer">
         <div class="playlist-header">
+            <div class="header">Opium Music Player</div>
             <h2>Playlists:</h2>
             <div class="album-card add-playlist">+</div>
         </div>
