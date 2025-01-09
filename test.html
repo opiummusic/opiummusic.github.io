@@ -43,8 +43,8 @@
         }
 
         .album-grid, .playlist-grid {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -55,11 +55,6 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             text-align: center;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
         .album-card img, .playlist-card img {
@@ -88,6 +83,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             width: 150px;
             height: 150px;
+            margin-top: 10px;
         }
 
         .loading-screen {
@@ -109,6 +105,7 @@
             <h2>Playlists:</h2>
         </div>
         <div class="playlist-grid" id="playlistGrid"></div>
+        <div class="album-card add-playlist" id="addPlaylistButton">+</div>
     </div>
     <div class="album-container">
         <h2>Albums:</h2>
@@ -170,7 +167,7 @@
 
         function loadPlaylists() {
             if (!db) {
-                console.error('Database is not initialized yet');
+                console.error('Database is not initialized');
                 return;
             }
 
@@ -181,16 +178,12 @@
             request.onsuccess = (event) => {
                 const playlists = event.target.result;
                 const playlistGrid = document.getElementById('playlistGrid');
-
                 playlistGrid.innerHTML = playlists.map((playlist) => `
                     <div class="album-card playlist-card">
                         <img src="${playlist.image}" alt="${playlist.name}">
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
-
-                // Append the "Add Playlist" button at the end
-                playlistGrid.appendChild(document.getElementById('addPlaylistButton'));
             };
 
             request.onerror = (event) => {
