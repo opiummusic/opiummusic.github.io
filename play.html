@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music Player</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">  <!-- Enables standalone mode -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  <!-- Status bar style -->
+    <meta name="apple-mobile-web-app-capable" content="yes">  
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> 
     <meta name="apple-mobile-web-app-title" content="Opium Music Player">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
-   
     <style>
-        /* Global Styles */
         body {
             background: #000000;
             color: #ffffff;
@@ -20,14 +18,12 @@
             padding: 0;
         }
 
-        /* Container for the album grid */
         .album-container {
-            display: none; /* Hidden until loaded */
+            display: none; 
             padding: 20px;
             text-align: center;
         }
 
-        /* Header */
         .header {
             background: #ffffff;
             color: #000000;
@@ -37,7 +33,6 @@
             font-weight: bold;
         }
 
-        /* Grid for albums */
         .album-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -45,7 +40,6 @@
             margin-top: 20px;
         }
 
-        /* Album card */
         .album-card {
             background: #1f1f1f;
             padding: 10px;
@@ -66,7 +60,6 @@
             margin: 0;
         }
 
-        /* Loading Screen */
         .loading-screen {
             display: flex;
             justify-content: center;
@@ -79,27 +72,35 @@
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">Loading Albums...</div>
 
-    <!-- Album Screen -->
     <div class="album-container" id="albumContainer">
         <div class="header">Opium Music Player</div>
         <div class="album-grid" id="albumGrid"></div>
     </div>
 
    <script>
-    // Album data
-    const albums = [
-        { title: "Die Lit", image: "images/dielit.jpeg", link: "https://opiummusic.github.io/album.html?album=LuvIsRage" },
-        { title: "We Love Tecca", image: "images/welovetecca.jpeg", link: "https://opiummusic.github.io/album.html?artist=Lil%20Tecca&album=WeLoveTecca" },
-        { title: "Great Chaos", image: "images/greatchoas.jpeg", link: "https://opiummusic.github.io/album.html?artist=Ken%20Carson&album=GreatChoas" },
-        { title: "Lyfe", image: "images/lyfe.jpeg", link: "https://opiummusic.github.io/album.html?artist=Yeat&album=Lyfe" },
-        { title: "Luv Is Rage", image: "images/luvisrage.jpeg", link: "https://opiummusic.github.io/album.html?artist=Lil%20Uzi&album=LuvIsRage" },
-        { title: "I Am Music", image: "images/IAmMusic.jpeg", link: "https://opiummusic.github.io/album.html?artist=Playboi%20Carti&album=IAmMusic" }
-    ];
+        fetch('music/albums.json')
+            .then(response => response.json())
+            .then(jsonData => {
+                const albums = [];
 
-    // Function to load albums
+                for (const artist in jsonData) {
+                    for (const album in jsonData[artist]) {
+                        const albumData = jsonData[artist][album];
+                        const albumObject = {
+                            title: album,
+                            image: albumData.image,
+                            link: `https://opiummusic.github.io/album.html?artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(album)}`
+                        };
+                        albums.push(albumObject);
+                    }
+                }
+
+                console.log(albums);
+            })
+            .catch(error => console.error('Error fetching the JSON data:', error));
+
     function loadAlbums() {
         const albumGrid = document.getElementById("albumGrid");
         const imagePromises = albums.map(album => {
@@ -107,7 +108,7 @@
                 const img = new Image();
                 img.src = album.image;
                 img.onload = resolve;
-                img.onerror = resolve; // Resolve even if there's an error loading the image
+                img.onerror = resolve;
                 const albumCard = document.createElement("div");
                 albumCard.className = "album-card";
                 albumCard.innerHTML = `
@@ -120,15 +121,12 @@
             });
         });
 
-        // Wait for all images to load
         Promise.all(imagePromises).then(() => {
-            // Hide loading screen and show albums
             document.getElementById("loadingScreen").style.display = "none";
             document.getElementById("albumContainer").style.display = "block";
         });
     }
 
-    // Start loading the albums
     loadAlbums();
 </script>
 
