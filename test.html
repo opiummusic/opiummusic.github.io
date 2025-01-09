@@ -122,25 +122,60 @@
     </div>
 
     <script>
-        let albums = [];
-        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+        let db;
+        const request = indexedDB.open('playlistDB', 1);
+
+        request.onerror = (event) => {
+            console.error('Database error:', event.target.errorCode);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            loadPlaylists();
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
 
         document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
 
         function createNewPlaylist() {
             const playlistName = prompt("Enter playlist name:");
             if (playlistName) {
-                playlists.push({ name: playlistName, songs: [] });
-                localStorage.setItem('playlists', JSON.stringify(playlists));
-                loadPlaylists();
+                const transaction = db.transaction(['playlists'], 'readwrite');
+                const objectStore = transaction.objectStore('playlists');
+                const request = objectStore.add({ name: playlistName, songs: [] });
+
+                request.onsuccess = () => {
+                    console.log('Playlist added to the database');
+                    loadPlaylists();
+                };
+
+                request.onerror = (event) => {
+                    console.error('Error adding playlist:', event.target.errorCode);
+                };
             }
         }
 
         function loadPlaylists() {
-            const playlistList = document.getElementById('playlistList');
-            playlistList.innerHTML = playlists.map((playlist, index) => `
-                <li>${playlist.name}</li>
-            `).join('');
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const playlistList = document.getElementById('playlistList');
+                playlistList.innerHTML = playlists.map((playlist) => `
+                    <li>${playlist.name}</li>
+                `).join('');
+            };
+
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
         }
 
         function loadAlbums() {
