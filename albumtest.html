@@ -75,7 +75,7 @@
             return urlParams.get(name);
         }
 
-       function loadAlbum(artistName, albumName) {
+function loadAlbum(artistName, albumName) {
     currentAlbum = albumData?.[artistName]?.[albumName];
 
     if (currentAlbum) {
@@ -222,24 +222,40 @@
         } else {
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
- function addToPlaylist(song, artistName, albumName, albumImage) {
-    const playlistIndex = prompt("Enter playlist index:");
-    const playlist = playlists[playlistIndex];
+function addToPlaylist(song, artistName, albumName, albumImage) {
+    const playlistDropdown = document.createElement('select');
+    playlistDropdown.id = 'playlistDropdown';
+    playlistDropdown.innerHTML = playlists.map((playlist, index) => `
+        <option value="${index}">${playlist.name}</option>
+    `).join('');
 
-    if (playlist) {
-        playlist.songs.push({
-            name: song.replace(".mp3", ""),
-            artist: artistName,
-            album: albumName,
-            albumArt: albumImage,
-            path: `music/${albumName}/${encodeURIComponent(song)}`
-        });
-        localStorage.setItem('playlists', JSON.stringify(playlists));
-        alert('Song added to playlist!');
-    } else {
-        alert('Invalid playlist index!');
-    }
+    const addToPlaylistButton = document.createElement('button');
+    addToPlaylistButton.textContent = 'Add to Playlist';
+    addToPlaylistButton.onclick = () => {
+        const selectedIndex = playlistDropdown.value;
+        const playlist = playlists[selectedIndex];
+
+        if (playlist) {
+            playlist.songs.push({
+                name: song.replace(".mp3", ""),
+                artist: artistName,
+                album: albumName,
+                albumArt: albumImage,
+                path: `music/${albumName}/${encodeURIComponent(song)}`
+            });
+            localStorage.setItem('playlists', JSON.stringify(playlists));
+            alert('Song added to playlist!');
+        } else {
+            alert('Invalid playlist selection!');
+        }
+    };
+
+    const dialog = document.createElement('div');
+    dialog.appendChild(playlistDropdown);
+    dialog.appendChild(addToPlaylistButton);
+    document.body.appendChild(dialog);
 }
+
     </script>
 </body>
 </html>
