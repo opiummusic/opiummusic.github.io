@@ -220,6 +220,7 @@
 
             Promise.all(imagePromises).then(() => {
                 document.getElementById("loadingScreen").style.display = "none";
+                document.getElementById("albumContainer").style.display = "block";
             });
         }
 
