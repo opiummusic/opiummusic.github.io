@@ -123,6 +123,8 @@
 
     <script>
         let db;
+        let albums = [];
+
         const request = indexedDB.open('playlistDB', 1);
 
         request.onerror = (event) => {
@@ -173,6 +175,11 @@
         }
 
         function loadPlaylists() {
+            if (!db) {
+                console.error('Database is not initialized');
+                return;
+            }
+
             const transaction = db.transaction(['playlists'], 'readonly');
             const objectStore = transaction.objectStore('playlists');
             const request = objectStore.getAll();
@@ -241,7 +248,11 @@
             .catch(error => console.error('Error fetching the JSON data:', error));
 
         // Load existing playlists on page load
-        loadPlaylists();
+        window.onload = function() {
+            if (db) {
+                loadPlaylists();
+            }
+        };
     </script>
 
 </body>
