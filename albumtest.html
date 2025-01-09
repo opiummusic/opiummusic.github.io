@@ -87,6 +87,21 @@
         .modal button:hover {
             background-color: #1c86ee; /* Darker blue accent color on hover */
         }
+
+        /* Add-to-playlist button styles */
+        .add-to-playlist-button {
+            background: none;
+            border: none;
+            color: #1e90ff; /* Blue accent color */
+            cursor: pointer;
+            font-size: 1.2em; /* Increase the size of the icon */
+            padding: 5px;
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        .add-to-playlist-button:hover {
+            color: #1c86ee; /* Darker blue on hover */
+        }
     </style>
 </head>
 <body>
@@ -186,7 +201,9 @@
                                     <li id="song-${index}">
                                         <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
-                                        <button onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">Add to Playlist</button>
+                                        <button class="add-to-playlist-button" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
                                     </li>
                                 `;
                             }).join('')}
