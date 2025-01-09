@@ -248,6 +248,38 @@
                 loadPlaylists();
             }
         };
+
+        function setPlaylistCardDimensions() {
+    // Get the first album card to use its dimensions
+    const albumCard = document.querySelector('.album-card');
+    if (albumCard) {
+        const albumCardWidth = albumCard.offsetWidth;
+        const albumCardHeight = albumCard.offsetHeight;
+
+        // Get all playlist cards
+        const playlistCards = document.querySelectorAll('.playlist-card');
+
+        // Set the dimensions of all playlist cards
+        playlistCards.forEach(card => {
+            card.style.width = `${albumCardWidth}px`;
+            card.style.height = `${albumCardHeight}px`;
+        });
+    } else {
+        console.error('No album card found to get dimensions from.');
+    }
+}
+
+// Call the function after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    setPlaylistCardDimensions();
+
+    // Call the function again whenever a new playlist is added
+    const observer = new MutationObserver(setPlaylistCardDimensions);
+    observer.observe(document.getElementById('playlistGrid'), { childList: true });
+});
+
+// Update dimensions on window resize
+window.addEventListener('resize', setPlaylistCardDimensions);
     </script>
 
 </body>
