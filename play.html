@@ -80,11 +80,11 @@
     </div>
 
    <script>
+        let albums = [];
+
         fetch('music/albums.json')
             .then(response => response.json())
             .then(jsonData => {
-                const albums = [];
-
                 for (const artist in jsonData) {
                     for (const album in jsonData[artist]) {
                         const albumData = jsonData[artist][album];
@@ -96,8 +96,8 @@
                         albums.push(albumObject);
                     }
                 }
-
-                console.log(albums);
+                
+                loadAlbums();
             })
             .catch(error => console.error('Error fetching the JSON data:', error));
 
@@ -126,8 +126,6 @@
             document.getElementById("albumContainer").style.display = "block";
         });
     }
-
-    loadAlbums();
 </script>
 
 </body>
