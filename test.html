@@ -61,14 +61,32 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             text-align: center;
+            width: 150px; /* Set width to match album card size */
+            height: 200px; /* Set height for card consistency */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .album-card img, .playlist-card img {
-            width: 100%;
-            height: auto;
+            width: 100%; /* Ensure the image takes the full width of the card */
+            height: 150px; /* Fixed height for the image */
+            object-fit: cover; /* Ensures the image fits within the dimensions */
             border-radius: 6px;
             margin-bottom: 10px;
         }
+
+        .album-card h3, .playlist-card h3 {
+            font-size: 1rem;
+            margin: 0;
+            color: #ffffff;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis; /* Handle text overflow */
+        }
+
 
         .album-card h3, .playlist-card h3 {
             font-size: 1rem;
@@ -248,38 +266,6 @@
                 loadPlaylists();
             }
         };
-
-        function setPlaylistCardDimensions() {
-    // Get the first album card to use its dimensions
-    const albumCard = document.querySelector('.album-card');
-    if (albumCard) {
-        const albumCardWidth = albumCard.offsetWidth;
-        const albumCardHeight = albumCard.offsetHeight;
-
-        // Get all playlist cards
-        const playlistCards = document.querySelectorAll('.playlist-card');
-
-        // Set the dimensions of all playlist cards
-        playlistCards.forEach(card => {
-            card.style.width = `${albumCardWidth}px`;
-            card.style.height = `${albumCardHeight}px`;
-        });
-    } else {
-        console.error('No album card found to get dimensions from.');
-    }
-}
-
-// Call the function after the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    setPlaylistCardDimensions();
-
-    // Call the function again whenever a new playlist is added
-    const observer = new MutationObserver(setPlaylistCardDimensions);
-    observer.observe(document.getElementById('playlistGrid'), { childList: true });
-});
-
-// Update dimensions on window resize
-window.addEventListener('resize', setPlaylistCardDimensions);
     </script>
 
 </body>
