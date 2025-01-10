@@ -127,17 +127,16 @@
             songsList.innerHTML = playlist.songs.map((song, index) => {
                 console.log('Song data:', song); // Log individual song to check its structure
                 
-                // Check if song is a string, and if not, check what it is
-                if (typeof song !== 'string') {
+                // Check if song is an object, and if not, check what it is
+                if (typeof song !== 'object' || song === null) {
                     console.error('Unexpected song data type:', song);
-                    return ''; // Skip this song if it's not a string
+                    return ''; // Skip this song if it's not an object
                 }
 
-                const songName = song.replace(".mp3", "");
                 return `
                     <li id="song-${index}">
-                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${playlist.name}', '${song}', 'song-${index}')"></i>
-                        <span class="song-name">${songName}</span>
+                        <i class="fa fa-play play-icon" onclick="playSong(${index}, ${JSON.stringify(playlist)}, '${song.path}', 'song-${index}')"></i>
+                        <span class="song-name">${song.name} - ${song.artist}</span>
                     </li>
                 `;
             }).join('');
@@ -146,7 +145,7 @@
             document.getElementById('playlistDetail').style.display = 'none';
         }
 
-        function playSong(songIndex, playlistName, song, songElementId) {
+        function playSong(songIndex, playlist, songPath, songElementId) {
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
                 previousPlayingElement.classList.remove('playing');
@@ -155,7 +154,6 @@
             const currentPlayingElement = document.getElementById(songElementId);
             currentPlayingElement.classList.add('playing');
 
-            const path = `music/${playlistName}/${song}`;
             const audio = document.getElementById('audioPlayer');
             const playerSongName = document.getElementById('playerSongName');
             const playerAlbumImage = document.getElementById('playerAlbumImage');
@@ -163,11 +161,11 @@
             const playPauseButton = document.getElementById('playPauseButton');
             const playerStrip = document.getElementById('playerStrip');
 
-            audio.src = path;
-            playerSongName.textContent = song.replace(".mp3", "");
-            playerAlbumImage.src = playlist.image;
+            audio.src = songPath;
+            playerSongName.textContent = playlist.songs[songIndex].name;
+            playerAlbumImage.src = playlist.songs[songIndex].albumArt;
             playerElapsedTime.textContent = "0:00";
-            document.title = playerSongName.textContent + " - " + playlistName;
+            document.title = playerSongName.textContent + " - " + playlist.name;
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
@@ -201,17 +199,11 @@
         }
 
         function nextSongInPlaylist() {
-            if (currentSongIndex < playlists[currentPlaylistIndex].songs.length - 1) {
-                currentSongIndex++;
-                playSongFromPlaylist();
-            }
+            // Implement the logic to play the next song in the playlist
         }
 
         function previousSongInPlaylist() {
-            if (currentSongIndex > 0) {
-                currentSongIndex--;
-                playSongFromPlaylist();
-            }
+            // Implement the logic to play the previous song in the playlist
         }
         
         document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
