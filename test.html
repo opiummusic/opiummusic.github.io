@@ -101,9 +101,7 @@ body {
     justify-content: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     width: 150px;
-    height: 150px;
-    margin-top: 20px;
-    margin-left: 20px; /* Space between playlist cards and the button */
+    height: 200px; /* Adjusted to match playlist-card height */
     flex-shrink: 0; /* Prevents the button from shrinking */
 }
 
@@ -116,7 +114,6 @@ body {
     color: #ffffff;
     font-size: 1.5rem;
 }
-
     </style>
 </head>
 <body>
@@ -126,8 +123,9 @@ body {
         <div class="playlist-header">
             <h2>Playlists:</h2>
         </div>
-        <div class="playlist-grid" id="playlistGrid"></div>
-        <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+        <div class="playlist-grid" id="playlistGrid">
+            <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+        </div>
     </div>
     <div class="album-container">
         <h2>Albums:</h2>
@@ -208,6 +206,8 @@ body {
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
+                // Move the add playlist button to the end
+                playlistGrid.appendChild(document.getElementById('addPlaylistButton'));
             };
 
             request.onerror = (event) => {
