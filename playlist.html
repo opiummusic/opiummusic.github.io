@@ -108,7 +108,7 @@
             const playlistImage = document.getElementById('playlistImage');
 
             playlistName.textContent = playlist.name;
-            playlistImage.src = playlist.image || 'music/dielit.jpeg';
+            playlistImage.src = playlist.image || 'default-image.jpg';
 
             playlistDetail.style.display = 'block';
         }
@@ -140,7 +140,7 @@
 
                 return `
                     <li id="song-${index}">
-                        <i class="fa fa-play play-icon" onclick="playSong(${index}, ${JSON.stringify(playlist)}, '${song.path}', 'song-${index}')"></i>
+                        <i class="fa fa-play play-icon" onclick='playSong(${index}, ${JSON.stringify(playlist)}, "${song.path}", "song-${index}")'></i>
                         <span class="song-name">${song.name} - ${song.artist}</span>
                     </li>
                 `;
