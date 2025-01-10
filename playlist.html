@@ -69,9 +69,8 @@
         };
 
         function loadPlaylistFromURL() {
-            // Get the playlist name from the URL query string (e.g., ?playlist=somePlaylist)
             const urlParams = new URLSearchParams(window.location.search);
-            const playlistName = urlParams.get('playlist'); // "playlist" is the query parameter
+            const playlistName = urlParams.get('playlist');
 
             if (!playlistName) {
                 console.error('No playlist name provided in the URL.');
@@ -104,7 +103,7 @@
             const playlistImage = document.getElementById('playlistImage');
 
             playlistName.textContent = playlist.name;
-            playlistImage.src = playlist.image || 'default-image.jpg'; // Use a default image if none is provided
+            playlistImage.src = playlist.image || 'default-image.jpg';
 
             playlistDetail.style.display = 'block';
         }
@@ -185,7 +184,16 @@
         }
 
         function nextSongInPlaylist() {
-            // Implement this function to play the next song in the playlist
+            if (currentSongIndex < playlists[currentPlaylistIndex].songs.length - 1) {
+                currentSongIndex++;
+                playSongFromPlaylist();
+            }
+        }
+        function previousSongInPlaylist() {
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+                playSongFromPlaylist();
+            }
         }
 
         document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
