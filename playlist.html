@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music Player - Playlist</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/styles.css" rel="stylesheet">
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
@@ -13,6 +14,7 @@
         <i class="fa fa-arrow-left"></i>
     </button>
 
+    <!-- Playlist Container -->
     <div class="playlist-container" id="playlistContainer">
         <h2>Selected Playlist</h2>
         <div id="playlistDetail" style="display: none;">
@@ -23,6 +25,7 @@
         </div>
     </div>
 
+    <!-- Songs Container -->
     <div class="songs-container" id="songsContainer" style="display: none;">
         <h2>Songs in Playlist</h2>
         <ul id="songs">
@@ -30,6 +33,7 @@
         </ul>
     </div>
 
+    <!-- Player Strip -->
     <div class="player-strip" id="playerStrip" style="display: none;">
         <div class="song-info">
             <img id="playerAlbumImage" src="" alt="Album Art">
@@ -45,6 +49,7 @@
         </div>
     </div>
 
+    <!-- Audio Element -->
     <audio id="audioPlayer"></audio>
 
     <script>
@@ -111,17 +116,29 @@
             const songsContainer = document.getElementById('songsContainer');
             const songsList = document.getElementById('songs');
             
-            songsList.innerHTML = playlist.songs.map(song => `
-                <li>
-                    <span>${song.name}</span>
-                    <button onclick="playSong('${song.path}', '${song.name}', '${song.albumArt}')">Play</button>
-                </li>
-            `).join('');
+            songsList.innerHTML = playlist.songs.map((song, index) => {
+                const songName = song.replace(".mp3", "");
+                return `
+                    <li id="song-${index}">
+                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${playlist.name}', '${song}', 'song-${index}')"></i>
+                        <span class="song-name">${songName}</span>
+                    </li>
+                `;
+            }).join('');
             songsContainer.style.display = 'block';
             document.getElementById('playlistDetail').style.display = 'none';
         }
 
-        function playSong(path, name, albumArt) {
+        function playSong(songIndex, playlistName, song, songElementId) {
+            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
+            if (previousPlayingElement) {
+                previousPlayingElement.classList.remove('playing');
+            }
+
+            const currentPlayingElement = document.getElementById(songElementId);
+            currentPlayingElement.classList.add('playing');
+
+            const path = `music/${playlistName}/${song}`;
             const audio = document.getElementById('audioPlayer');
             const playerSongName = document.getElementById('playerSongName');
             const playerAlbumImage = document.getElementById('playerAlbumImage');
@@ -130,10 +147,10 @@
             const playerStrip = document.getElementById('playerStrip');
 
             audio.src = path;
-            playerSongName.textContent = name;
-            playerAlbumImage.src = albumArt;
+            playerSongName.textContent = song.replace(".mp3", "");
+            playerAlbumImage.src = playlist.image;
             playerElapsedTime.textContent = "0:00";
-            document.title = name;
+            document.title = playerSongName.textContent + " - " + playlistName;
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
@@ -178,10 +195,8 @@
                 playSongFromPlaylist();
             }
         }
-
         document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
-        document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
-        
+
         function togglePlayPause() {
             const audio = document.getElementById('audioPlayer');
             const playPauseButton = document.getElementById('playPauseButton');
@@ -196,7 +211,6 @@
                 playPauseButton.classList.add("fa-play");
             }
         }
-
     </script>
 </body>
 </html>
