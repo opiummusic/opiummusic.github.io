@@ -112,23 +112,40 @@
             playlistDetail.style.display = 'block';
         }
 
+
         function displaySongs(playlist) {
-            const songsContainer = document.getElementById('songsContainer');
-            const songsList = document.getElementById('songs');
-            
-            songsList.innerHTML = playlist.songs.map((song, index) => {
-                const songName = song.replace(".mp3", "");
-                return `
-                    <li id="song-${index}">
-                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${playlist.name}', '${song}', 'song-${index}')"></i>
-                        <span class="song-name">${songName}</span>
-                    </li>
-                `;
-            }).join('');
-            songsContainer.style.display = 'block';
-            document.getElementById('playlistDetail').style.display = 'none';
+        console.log('Displaying Songs:', playlist.songs); // Debugging to inspect the songs data structure
+        const songsContainer = document.getElementById('songsContainer');
+        const songsList = document.getElementById('songs');
+        
+        // Check if playlist.songs exists and is an array
+        if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
+            console.error('No songs found or songs is not an array');
+            return;
         }
 
+        // Dynamically create song list
+        songsList.innerHTML = playlist.songs.map((song, index) => {
+            console.log('Song data:', song); // Log individual song to check its structure
+            
+            // Check if song is a string, and if not, check what it is
+            if (typeof song !== 'string') {
+                console.error('Unexpected song data type:', song);
+                return ''; // Skip this song if it's not a string
+            }
+
+            const songName = song.replace(".mp3", "");
+            return `
+                <li id="song-${index}">
+                    <i class="fa fa-play play-icon" onclick="playSong(${index}, '${playlist.name}', '${song}', 'song-${index}')"></i>
+                    <span class="song-name">${songName}</span>
+                </li>
+            `;
+        }).join('');
+
+        songsContainer.style.display = 'block';
+        document.getElementById('playlistDetail').style.display = 'none';
+        
         function playSong(songIndex, playlistName, song, songElementId) {
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
