@@ -102,6 +102,8 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     width: 150px;
     height: 150px;
+    margin-top: 20px;
+    margin-left: 20px; /* Space between playlist cards and the button */
     flex-shrink: 0; /* Prevents the button from shrinking */
 }
 
@@ -125,6 +127,7 @@ body {
             <h2>Playlists:</h2>
         </div>
         <div class="playlist-grid" id="playlistGrid"></div>
+        <div class="album-card add-playlist" id="addPlaylistButton">+</div>
     </div>
     <div class="album-container">
         <h2>Albums:</h2>
@@ -205,10 +208,6 @@ body {
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
-                playlistGrid.innerHTML += `
-                    <div class="album-card add-playlist" id="addPlaylistButton">+</div>
-                `;
-                document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
             };
 
             request.onerror = (event) => {
