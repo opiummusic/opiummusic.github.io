@@ -202,7 +202,9 @@ body {
                 const playlistGrid = document.getElementById('playlistGrid');
                 playlistGrid.innerHTML = playlists.map((playlist) => `
                     <div class="album-card playlist-card">
+                    <a href="/playlist.html?playlist=${playlist.name}">
                         <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
+                    </a>
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
