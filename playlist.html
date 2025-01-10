@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music Player - Playlist</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="assets/styles.css" rel="stylesheet">
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
 <body>
-    <button class="back-button" onclick="window.location.href='index.html'">
+    <button class="back-button" onclick="window.location.href='/play.html'">
         <i class="fa fa-arrow-left"></i>
     </button>
 
@@ -20,7 +19,6 @@
             <div class="album-card playlist-card">
                 <img id="playlistImage" src="" alt="Playlist Image" style="width:150px;height:150px;">
                 <h3 id="playlistName"></h3>
-                <button onclick="displaySongs()">Show Songs</button>
             </div>
         </div>
     </div>
@@ -87,6 +85,7 @@
 
                 if (selectedPlaylist) {
                     displayPlaylist(selectedPlaylist);
+                    displaySongs(selectedPlaylist); // Automatically display songs
                 } else {
                     console.error('Playlist not found');
                 }
@@ -108,34 +107,18 @@
             playlistDetail.style.display = 'block';
         }
 
-        function displaySongs() {
-            const playlistName = document.getElementById('playlistName').textContent;
-
-            const transaction = db.transaction(['playlists'], 'readonly');
-            const objectStore = transaction.objectStore('playlists');
-            const request = objectStore.getAll();
-
-            request.onsuccess = (event) => {
-                const playlists = event.target.result;
-                const playlist = playlists.find(p => p.name === playlistName);
-                const songsContainer = document.getElementById('songsContainer');
-                const songsList = document.getElementById('songs');
-                
-                if (playlist) {
-                    songsList.innerHTML = playlist.songs.map(song => `
-                        <li>
-                            <span>${song.name}</span>
-                            <button onclick="playSong('${song.path}', '${song.name}', '${song.albumArt}')">Play</button>
-                        </li>
-                    `).join('');
-                    songsContainer.style.display = 'block';
-                    document.getElementById('playlistDetail').style.display = 'none';
-                }
-            };
-
-            request.onerror = (event) => {
-                console.error('Error retrieving playlist:', event.target.errorCode);
-            };
+        function displaySongs(playlist) {
+            const songsContainer = document.getElementById('songsContainer');
+            const songsList = document.getElementById('songs');
+            
+            songsList.innerHTML = playlist.songs.map(song => `
+                <li>
+                    <span>${song.name}</span>
+                    <button onclick="playSong('${song.path}', '${song.name}', '${song.albumArt}')">Play</button>
+                </li>
+            `).join('');
+            songsContainer.style.display = 'block';
+            document.getElementById('playlistDetail').style.display = 'none';
         }
 
         function playSong(path, name, albumArt) {
