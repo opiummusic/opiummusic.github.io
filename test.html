@@ -102,8 +102,6 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     width: 150px;
     height: 150px;
-    margin-top: 20px;
-    margin-left: 20px; /* Space between playlist cards and the button */
     flex-shrink: 0; /* Prevents the button from shrinking */
 }
 
@@ -126,8 +124,9 @@ body {
         <div class="playlist-header">
             <h2>Playlists:</h2>
         </div>
-        <div class="playlist-grid" id="playlistGrid"></div>
-        <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+        <div class="playlist-grid" id="playlistGrid">
+            <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+        </div>
     </div>
     <div class="album-container">
         <h2>Albums:</h2>
@@ -200,7 +199,9 @@ body {
             request.onsuccess = (event) => {
                 const playlists = event.target.result;
                 const playlistGrid = document.getElementById('playlistGrid');
-                playlistGrid.innerHTML = playlists.map((playlist) => `
+                playlistGrid.innerHTML = `
+                    <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+                ` + playlists.map((playlist) => `
                     <div class="album-card playlist-card">
                     <a href="/playlist.html?playlist=${playlist.name}">
                         <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
@@ -208,6 +209,7 @@ body {
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
+                document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
             };
 
             request.onerror = (event) => {
