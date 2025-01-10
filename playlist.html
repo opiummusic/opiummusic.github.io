@@ -28,6 +28,7 @@
     <!-- Songs Container -->
     <div class="songs-container" id="songsContainer" style="display: none;">
         <h2>Songs in Playlist</h2>
+        <img id="playlistImageInSongs" src="" alt="Playlist Image" style="width:150px;height:150px; display: block; margin: 0 auto;">
         <ul id="songs">
             <!-- Songs will be dynamically loaded here -->
         </ul>
@@ -116,12 +117,16 @@
             console.log('Displaying Songs:', playlist.songs); // Debugging to inspect the songs data structure
             const songsContainer = document.getElementById('songsContainer');
             const songsList = document.getElementById('songs');
+            const playlistImageInSongs = document.getElementById('playlistImageInSongs');
             
             // Check if playlist.songs exists and is an array
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
                 return;
             }
+
+            // Set the playlist image in the songs container
+            playlistImageInSongs.src = playlist.image || 'default-image.jpg';
 
             // Dynamically create song list
             songsList.innerHTML = playlist.songs.map((song, index) => {
