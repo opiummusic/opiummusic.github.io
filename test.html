@@ -124,9 +124,7 @@ body {
         <div class="playlist-header">
             <h2>Playlists:</h2>
         </div>
-        <div class="playlist-grid" id="playlistGrid">
-            <div class="album-card add-playlist" id="addPlaylistButton">+</div>
-        </div>
+        <div class="playlist-grid" id="playlistGrid"></div>
     </div>
     <div class="album-container">
         <h2>Albums:</h2>
@@ -199,9 +197,7 @@ body {
             request.onsuccess = (event) => {
                 const playlists = event.target.result;
                 const playlistGrid = document.getElementById('playlistGrid');
-                playlistGrid.innerHTML = `
-                    <div class="album-card add-playlist" id="addPlaylistButton">+</div>
-                ` + playlists.map((playlist) => `
+                playlistGrid.innerHTML = playlists.map((playlist) => `
                     <div class="album-card playlist-card">
                     <a href="/playlist.html?playlist=${playlist.name}">
                         <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
@@ -209,6 +205,9 @@ body {
                         <h3>${playlist.name}</h3>
                     </div>
                 `).join('');
+                playlistGrid.innerHTML += `
+                    <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+                `;
                 document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
             };
 
