@@ -3,21 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opium Music Player</title>
+    <title>Opium Music Player - Playlist</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/styles.css" rel="stylesheet">
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
 <body>
-    <button class="back-button" onclick="window.location.href='play.html'">
+    <button class="back-button" onclick="window.location.href='index.html'">
         <i class="fa fa-arrow-left"></i>
     </button>
 
-    <!-- Playlist Grid -->
-    <div class="album-container" id="playlistGrid"></div>
+    <div class="playlist-container" id="playlistContainer">
+        <h2>Selected Playlist</h2>
+        <div id="playlistDetail" style="display: none;">
+            <div class="album-card playlist-card">
+                <img id="playlistImage" src="" alt="Playlist Image" style="width:150px;height:150px;">
+                <h3 id="playlistName"></h3>
+                <button onclick="displaySongs()">Show Songs</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- Player Strip -->
+    <div class="songs-container" id="songsContainer" style="display: none;">
+        <h2>Songs in Playlist</h2>
+        <ul id="songs">
+            <!-- Songs will be dynamically loaded here -->
+        </ul>
+    </div>
+
     <div class="player-strip" id="playerStrip" style="display: none;">
         <div class="song-info">
             <img id="playerAlbumImage" src="" alt="Album Art">
@@ -36,22 +50,31 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-        let audio = document.getElementById('audioPlayer');
-        let currentSongIndex = 0;
-        let currentPlaylist = null;
-        let playPauseButton = document.getElementById("playPauseButton");
-        let playerStrip = document.getElementById("playerStrip");
-        let playerSongName = document.getElementById("playerSongName");
-        let playerAlbumImage = document.getElementById("playerAlbumImage");
-        let playerElapsedTime = document.getElementById("playerElapsedTime");
-        let elapsedTimeInterval = null;
+        let db;
+        const request = indexedDB.open('playlistDB', 1);
 
-        let playlists = []; // Global variable for storing playlist data from IndexedDB
+        request.onerror = (event) => {
+            console.error('Database error:', event.target.errorCode);
+        };
 
-        // Function to load playlists from IndexedDB
-        function loadPlaylists() {
-            if (!db) {
-                console.error('Database is not initialized');
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            loadPlaylistFromURL();
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
+
+        function loadPlaylistFromURL() {
+            // Get the playlist name from the URL query string (e.g., ?playlist=somePlaylist)
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistName = urlParams.get('playlist'); // "playlist" is the query parameter
+
+            if (!playlistName) {
+                console.error('No playlist name provided in the URL.');
                 return;
             }
 
@@ -60,27 +83,14 @@
             const request = objectStore.getAll();
 
             request.onsuccess = (event) => {
-                playlists = event.target.result;
-                const playlistGrid = document.getElementById('playlistGrid');
-                playlistGrid.innerHTML = playlists.map((playlist) => {
-                    return `
-                        <div class="album-card playlist-card">
-                            <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
-                            <h3>${playlist.name}</h3>
-                            <ul>
-                                ${playlist.songs.map((song, index) => {
-                                    const songName = song.replace(".mp3", "");
-                                    return `
-                                        <li id="song-${index}">
-                                            <i class="fa fa-play play-icon" onclick="playSong(${index}, '${playlist.name}', '${song}', 'song-${index}')"></i>
-                                            <span class="song-name">${songName}</span>
-                                        </li>
-                                    `;
-                                }).join('')}
-                            </ul>
-                        </div>
-                    `;
-                }).join('');
+                const playlists = event.target.result;
+                const selectedPlaylist = playlists.find(p => p.name === playlistName);
+
+                if (selectedPlaylist) {
+                    displayPlaylist(selectedPlaylist);
+                } else {
+                    console.error('Playlist not found');
+                }
             };
 
             request.onerror = (event) => {
@@ -88,31 +98,60 @@
             };
         }
 
-        // Function to play a selected song
-        function playSong(songIndex, playlistName, song, songElementId) {
-            currentPlaylist = playlists.find(pl => pl.name === playlistName);
+        function displayPlaylist(playlist) {
+            const playlistDetail = document.getElementById('playlistDetail');
+            const playlistName = document.getElementById('playlistName');
+            const playlistImage = document.getElementById('playlistImage');
 
-            if (!currentPlaylist) {
-                console.error('Playlist not found');
-                return;
-            }
+            playlistName.textContent = playlist.name;
+            playlistImage.src = playlist.image || 'default-image.jpg'; // Use a default image if none is provided
 
-            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
-            if (previousPlayingElement) {
-                previousPlayingElement.classList.remove('playing');
-            }
+            playlistDetail.style.display = 'block';
+        }
 
-            const currentPlayingElement = document.getElementById(songElementId);
-            currentPlayingElement.classList.add('playing');
+        function displaySongs() {
+            const playlistName = document.getElementById('playlistName').textContent;
 
-            currentSongIndex = songIndex;
-            const songPath = `music/${playlistName}/${encodeURIComponent(song)}`;
-            audio.src = songPath;
-            localStorage.SongName = songPath;
-            playerSongName.textContent = song.replace(".mp3", "");
-            playerAlbumImage.src = currentPlaylist.image;
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const playlist = playlists.find(p => p.name === playlistName);
+                const songsContainer = document.getElementById('songsContainer');
+                const songsList = document.getElementById('songs');
+                
+                if (playlist) {
+                    songsList.innerHTML = playlist.songs.map(song => `
+                        <li>
+                            <span>${song.name}</span>
+                            <button onclick="playSong('${song.path}', '${song.name}', '${song.albumArt}')">Play</button>
+                        </li>
+                    `).join('');
+                    songsContainer.style.display = 'block';
+                    document.getElementById('playlistDetail').style.display = 'none';
+                }
+            };
+
+            request.onerror = (event) => {
+                console.error('Error retrieving playlist:', event.target.errorCode);
+            };
+        }
+
+        function playSong(path, name, albumArt) {
+            const audio = document.getElementById('audioPlayer');
+            const playerSongName = document.getElementById('playerSongName');
+            const playerAlbumImage = document.getElementById('playerAlbumImage');
+            const playerElapsedTime = document.getElementById('playerElapsedTime');
+            const playPauseButton = document.getElementById('playPauseButton');
+            const playerStrip = document.getElementById('playerStrip');
+
+            audio.src = path;
+            playerSongName.textContent = name;
+            playerAlbumImage.src = albumArt;
             playerElapsedTime.textContent = "0:00";
-            document.title = playerSongName.textContent + " - " + currentPlaylist.name;
+            document.title = name;
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
@@ -123,53 +162,39 @@
                 console.error('Error playing the audio:', error);
             });
 
-            audio.onerror = () => {
-                alert('Error playing the song. Please check the file path or format.');
-            };
-
             audio.onended = () => {
-                nextSong();
+                nextSongInPlaylist();
             };
-
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: song.replace(".mp3", ""),
-                    artist: currentPlaylist.name,
-                    album: currentPlaylist.name,
-                    artwork: [
-                        { src: currentPlaylist.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentPlaylist.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentPlaylist.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentPlaylist.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentPlaylist.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentPlaylist.image, sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
-
-                navigator.mediaSession.setActionHandler('play', togglePlayPause);
-                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
-                navigator.mediaSession.setActionHandler('previoustrack', previousSong);
-                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
-            }
         }
 
-        // Function to update elapsed time while the song is playing
         function startElapsedTimeUpdate() {
+            const audio = document.getElementById('audioPlayer');
+            const playerElapsedTime = document.getElementById('playerElapsedTime');
+
+            let elapsedTimeInterval;
             if (elapsedTimeInterval) {
                 clearInterval(elapsedTimeInterval);
             }
 
             elapsedTimeInterval = setInterval(() => {
                 const elapsedSeconds = Math.floor(audio.currentTime);
-                localStorage.SongTime = elapsedSeconds;
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
                 playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }, 1000);
         }
 
-        // Function to toggle play/pause
+        function nextSongInPlaylist() {
+            // Implement this function to play the next song in the playlist
+        }
+
+        document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
+        document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
+        
         function togglePlayPause() {
+            const audio = document.getElementById('audioPlayer');
+            const playPauseButton = document.getElementById('playPauseButton');
+
             if (audio.paused) {
                 audio.play();
                 playPauseButton.classList.remove("fa-play");
@@ -181,31 +206,6 @@
             }
         }
 
-        // Function to go to the next song in the playlist
-        function nextSong() {
-            if (currentSongIndex < currentPlaylist.songs.length - 1) {
-                currentSongIndex++;
-                const song = currentPlaylist.songs[currentSongIndex];
-                playSong(currentSongIndex, currentPlaylist.name, song, `song-${currentSongIndex}`);
-            }
-        }
-
-        // Function to go to the previous song in the playlist
-        function previousSong() {
-            if (currentSongIndex > 0) {
-                currentSongIndex--;
-                const song = currentPlaylist.songs[currentSongIndex];
-                playSong(currentSongIndex, currentPlaylist.name, song, `song-${currentSongIndex}`);
-            }
-        }
-
-        // Event listeners for player controls
-        playPauseButton.addEventListener("click", togglePlayPause);
-        document.getElementById("nextButton").addEventListener("click", nextSong);
-        document.getElementById("previousButton").addEventListener("click", previousSong);
-
-        // Initialize playlists
-        loadPlaylists();
     </script>
 </body>
 </html>
