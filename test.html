@@ -160,34 +160,41 @@
         document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
 
         function createNewPlaylist() {
-            const playlistName = prompt("Enter playlist name:");
-            if (playlistName) {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (event) => {
-                    const file = event.target.files[0];
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const image = e.target.result;
-                        const transaction = db.transaction(['playlists'], 'readwrite');
-                        const objectStore = transaction.objectStore('playlists');
-                        const request = objectStore.add({ name: playlistName, image: image, songs: [] });
-
-                        request.onsuccess = () => {
-                            console.log('Playlist added to the database');
-                            loadPlaylists();
-                        };
-
-                        request.onerror = (event) => {
-                            console.error('Error adding playlist:', event.target.errorCode);
-                        };
-                    };
-                    reader.readAsDataURL(file);
-                };
-                input.click();
+    const playlistName = prompt("Enter playlist name:");
+    if (playlistName) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                alert('You must select a photo to create a playlist.');
+                return; // Stop the process if no file is selected
             }
-        }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const image = e.target.result;
+                const transaction = db.transaction(['playlists'], 'readwrite');
+                const objectStore = transaction.objectStore('playlists');
+                const request = objectStore.add({ name: playlistName, image: image, songs: [] });
+
+                request.onsuccess = () => {
+                    console.log('Playlist added to the database');
+                    loadPlaylists();
+                    alert("Playlist " + playlistName + "succsefully created!")
+                };
+
+                request.onerror = (event) => {
+                    console.error('Error adding playlist:', event.target.errorCode);
+                };
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+}
+
 
         function loadPlaylists() {
     if (!db) {
