@@ -9,23 +9,17 @@
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
-
-    
 <body>
     <!-- Back Button -->
     <button class="back-button" onclick="window.location.href='/play.html'">
         <i class="fa fa-arrow-left"></i>
     </button>
 
-    
-
     <!-- Songs Container -->
     <div class="album-container" id="songsContainer" style="display: none;">
         <img id="playlistImageInSongs" src="" alt="Playlist Image">
         <h2 id="playlistname">Loading...</h2>
-        <ul id="songs" class="album-card">
-            <!-- Songs will be dynamically loaded here -->
-        </ul>
+        <ul id="songs" class="album-card"></ul>
     </div>
 
     <!-- Player Strip -->
@@ -47,7 +41,7 @@
     <!-- Audio Element -->
     <audio id="audioPlayer"></audio>
 
-        <script>
+    <script>
         let db;
         const request = indexedDB.open('playlistDB', 1);
 
@@ -84,8 +78,7 @@
                 const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
                 if (selectedPlaylist) {
-                    displayPlaylist(selectedPlaylist);
-                    displaySongs(selectedPlaylist); // Automatically display songs
+                    displaySongs(selectedPlaylist);
                 } else {
                     console.error('Playlist not found');
                 }
@@ -96,28 +89,17 @@
             };
         }
 
-        function displayPlaylist(playlist) {
-            const playlistName = document.getElementById('playlistname');
-            const playlistImage = document.getElementById('playlistImage');
-
-            playlistName.textContent = playlist.name;
-            playlistImage.src = playlist.image || 'default-image.jpg';
-
-
-        }
-
         function displaySongs(playlist) {
             const songsContainer = document.getElementById('songsContainer');
             const songsList = document.getElementById('songs');
             const playlistImageInSongs = document.getElementById('playlistImageInSongs');
-            
+
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
                 return;
             }
 
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
-
             songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
                     <i class="fa fa-play play-icon" onclick='playSong(${index}, ${JSON.stringify(playlist)}, "${song.path}", "song-${index}")'></i>
@@ -126,43 +108,12 @@
             `).join('');
 
             songsContainer.style.display = 'block';
-            document.getElementById('playlistDetail').style.display = 'none';
         }
 
         function playSong(songIndex, playlist, songPath, songElementId) {
-            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
-            if (previousPlayingElement) {
-                previousPlayingElement.classList.remove('playing');
-            }
-
-            const currentPlayingElement = document.getElementById(songElementId);
-            currentPlayingElement.classList.add('playing');
-
             const audio = document.getElementById('audioPlayer');
-            const playerSongName = document.getElementById('playerSongName');
-            const playerAlbumImage = document.getElementById('playerAlbumImage');
-            const playerElapsedTime = document.getElementById('playerElapsedTime');
-            const playPauseButton = document.getElementById('playPauseButton');
-            const playerStrip = document.getElementById('playerStrip');
-
             audio.src = songPath;
-            playerSongName.textContent = playlist.songs[songIndex].name;
-            playerAlbumImage.src = playlist.songs[songIndex].albumArt || 'default-album-art.jpg';
-            playerElapsedTime.textContent = "0:00";
-            document.title = playerSongName.textContent + " - " + playlist.name;
-
-            audio.play().then(() => {
-                startElapsedTimeUpdate();
-                playPauseButton.classList.remove("fa-play");
-                playPauseButton.classList.add("fa-pause");
-                playerStrip.style.display = "flex";
-            }).catch(error => {
-                console.error('Error playing the audio:', error);
-            });
-
-            audio.onended = () => {
-                nextSongInPlaylist();
-            };
+            audio.play();
         }
     </script>
 </body>
