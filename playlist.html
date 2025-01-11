@@ -16,19 +16,21 @@
     </button>
 
     <!-- Playlist Container -->
-    <div class="playlist-container" id="playlistContainer">
+    <div class="album-container" id="playlistContainer">
         <h2>Selected Playlist</h2>
-        <div id="playlistDetail" class="album-card playlist-card" style="display: none;">
-            <img id="playlistImage" src="" alt="Playlist Image">
-            <h3 id="playlistName"></h3>
+        <div id="playlistDetail" style="display: none;">
+            <div class="album-card playlist-card">
+                <img id="playlistImage" src="" alt="Playlist Image">
+                <h3 id="playlistName"></h3>
+            </div>
         </div>
     </div>
 
     <!-- Songs Container -->
-    <div class="songs-container" id="songsContainer" style="display: none;">
+    <div class="album-container" id="songsContainer" style="display: none;">
         <h2>Songs in Playlist</h2>
         <img id="playlistImageInSongs" src="" alt="Playlist Image">
-        <ul id="songs">
+        <ul id="songs" class="album-card">
             <!-- Songs will be dynamically loaded here -->
         </ul>
     </div>
@@ -52,8 +54,7 @@
     <!-- Audio Element -->
     <audio id="audioPlayer"></audio>
 
-    <!-- JavaScript -->
-    <script>
+        <script>
         let db;
         const request = indexedDB.open('playlistDB', 1);
 
