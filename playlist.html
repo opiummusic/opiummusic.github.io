@@ -6,10 +6,10 @@
     <title>Opium Music Player - Playlist</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/styles.css" rel="stylesheet">
-    <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
 <body>
+    <!-- Back Button -->
     <button class="back-button" onclick="window.location.href='/play.html'">
         <i class="fa fa-arrow-left"></i>
     </button>
@@ -19,7 +19,7 @@
         <h2>Selected Playlist</h2>
         <div id="playlistDetail" style="display: none;">
             <div class="album-card playlist-card">
-                <img id="playlistImage" src="" alt="Playlist Image" style="width:150px;height:150px;">
+                <img id="playlistImage" src="" alt="Playlist Image">
                 <h3 id="playlistName"></h3>
             </div>
         </div>
@@ -28,7 +28,7 @@
     <!-- Songs Container -->
     <div class="songs-container" id="songsContainer" style="display: none;">
         <h2>Songs in Playlist</h2>
-        <img id="playlistImageInSongs" src="" alt="Playlist Image" style="width:150px;height:150px; display: block; margin: 0 auto;">
+        <img id="playlistImageInSongs" src="" alt="Playlist Image">
         <ul id="songs">
             <!-- Songs will be dynamically loaded here -->
         </ul>
@@ -53,6 +53,7 @@
     <!-- Audio Element -->
     <audio id="audioPlayer"></audio>
 
+    <!-- JavaScript -->
     <script>
         let db;
         const request = indexedDB.open('playlistDB', 1);
@@ -114,37 +115,23 @@
         }
 
         function displaySongs(playlist) {
-            console.log('Displaying Songs:', playlist.songs); // Debugging to inspect the songs data structure
             const songsContainer = document.getElementById('songsContainer');
             const songsList = document.getElementById('songs');
             const playlistImageInSongs = document.getElementById('playlistImageInSongs');
             
-            // Check if playlist.songs exists and is an array
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
                 return;
             }
 
-            // Set the playlist image in the songs container
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
 
-            // Dynamically create song list
-            songsList.innerHTML = playlist.songs.map((song, index) => {
-                console.log('Song data:', song); // Log individual song to check its structure
-                
-                // Check if song is an object, and if not, check what it is
-                if (typeof song !== 'object' || song === null) {
-                    console.error('Unexpected song data type:', song);
-                    return ''; // Skip this song if it's not an object
-                }
-
-                return `
-                    <li id="song-${index}">
-                        <i class="fa fa-play play-icon" onclick='playSong(${index}, ${JSON.stringify(playlist)}, "${song.path}", "song-${index}")'></i>
-                        <span class="song-name">${song.name} - ${song.artist}</span>
-                    </li>
-                `;
-            }).join('');
+            songsList.innerHTML = playlist.songs.map((song, index) => `
+                <li id="song-${index}">
+                    <i class="fa fa-play play-icon" onclick='playSong(${index}, ${JSON.stringify(playlist)}, "${song.path}", "song-${index}")'></i>
+                    <span class="song-name">${song.name} - ${song.artist}</span>
+                </li>
+            `).join('');
 
             songsContainer.style.display = 'block';
             document.getElementById('playlistDetail').style.display = 'none';
@@ -168,7 +155,7 @@
 
             audio.src = songPath;
             playerSongName.textContent = playlist.songs[songIndex].name;
-            playerAlbumImage.src = playlist.songs[songIndex].albumArt;
+            playerAlbumImage.src = playlist.songs[songIndex].albumArt || 'default-album-art.jpg';
             playerElapsedTime.textContent = "0:00";
             document.title = playerSongName.textContent + " - " + playlist.name;
 
@@ -190,12 +177,7 @@
             const audio = document.getElementById('audioPlayer');
             const playerElapsedTime = document.getElementById('playerElapsedTime');
 
-            let elapsedTimeInterval;
-            if (elapsedTimeInterval) {
-                clearInterval(elapsedTimeInterval);
-            }
-
-            elapsedTimeInterval = setInterval(() => {
+            setInterval(() => {
                 const elapsedSeconds = Math.floor(audio.currentTime);
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
@@ -204,13 +186,13 @@
         }
 
         function nextSongInPlaylist() {
-            // Implement the logic to play the next song in the playlist
+            // Logic for next song
         }
 
         function previousSongInPlaylist() {
-            // Implement the logic to play the previous song in the playlist
+            // Logic for previous song
         }
-        
+
         document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
         document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
         document.getElementById("playPauseButton").addEventListener("click", togglePlayPause);
