@@ -46,7 +46,49 @@
         let elapsedTimeInterval = null;
 
         let albumData = null;
-    
+       let db;
+        const request = indexedDB.open('playlistDB', 1);
+
+        request.onerror = (event) => {
+            console.error('Database error:', event.target.errorCode);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            loadPlaylistFromURL();
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
+
+        function loadPlaylistFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistName = urlParams.get('playlist');
+
+            if (!playlistName) {
+                console.error('No playlist name provided in the URL.');
+                return;
+            }
+
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const selectedPlaylist = playlists.find(p => p.name === playlistName);
+
+            
+            };
+
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
+        }
+
         fetch('music/albums.json')
           .then(response => {
             if (!response.ok) {
@@ -83,14 +125,14 @@
                 albumContainer.innerHTML = `
                     <div class="album-card">
                         <img src="${currentAlbum.image}" alt="Playlist image">
-                        <h3>${new URLSearchParams(window.location.search).get('playlist')}</h3>
+                         <h3>${new URLSearchParams(window.location.search).get('playlist')}</h3>
                         <ul>
                             ${currentAlbum.songs.map((song, index) => {
                                 const songName = song.replace(".mp3", "");
                                 return `
                                     <li id="song-${index}">
-                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
-                                        <span class="song-name">${songName}</span>
+                                        <i class="fa fa-play play-icon" onclick='playSong(${index}, ${JSON.stringify(playlist)}, "${song.path}", "song-${index}")', 'song-${index}')"></i>
+                                        <span class="song-name">${song.name}</span>
                                     </li>
                                 `;
                             }).join('')}
