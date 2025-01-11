@@ -156,19 +156,21 @@
             };
 
             if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: songName,
-                    artist: currentAlbum.songs[songIndex].artist,
-                    album: currentAlbum.name,
-                    artwork: [
-                        { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
+                const albumImage = currentAlbum.songs[songIndex].albumImage || currentAlbum.image;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: songName,
+        artist: currentAlbum.songs[songIndex].artist,
+        album: currentAlbum.name,
+        artwork: [
+            { src: albumImage, sizes: '96x96', type: 'image/jpeg' },
+            { src: albumImage, sizes: '128x128', type: 'image/jpeg' },
+            { src: albumImage, sizes: '192x192', type: 'image/jpeg' },
+            { src: albumImage, sizes: '256x256', type: 'image/jpeg' },
+            { src: albumImage, sizes: '384x384', type: 'image/jpeg' },
+            { src: albumImage, sizes: '512x512', type: 'image/jpeg' }
+        ]
+    });
 
                 navigator.mediaSession.setActionHandler('play', togglePlayPause);
                 navigator.mediaSession.setActionHandler('pause', togglePlayPause);
