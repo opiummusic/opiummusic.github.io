@@ -302,14 +302,15 @@ button:hover {
         }
 
         function playSong(songIndex, songPath, songElementId) {
-            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
-            if (previousPlayingElement) {
-                previousPlayingElement.classList.remove('playing');
-            }
+            const previousPlayingElement = document.querySelector('#songs li.playing');
+if (previousPlayingElement) {
+    previousPlayingElement.classList.remove('playing');
+}
 
-            const currentPlayingElement = document.getElementById(songElementId);
-            currentPlayingElement.classList.add('playing');
-
+const currentPlayingElement = document.getElementById(songElementId);
+if (currentPlayingElement) {
+    currentPlayingElement.classList.add('playing');
+}           
             currentSongIndex = songIndex;
             audio.src = songPath;
             audio.play();
