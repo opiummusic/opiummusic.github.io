@@ -42,7 +42,7 @@
     <script>
         let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
-        let currentPlaylist = null;
+        let currentAlbum = null;
         let playPauseButton = document.getElementById("playPauseButton");
         let playerStrip = document.getElementById("playerStrip");
         let playerSongName = document.getElementById("playerSongName");
@@ -86,7 +86,7 @@
                 const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
                 if (selectedPlaylist) {
-                    currentPlaylist = selectedPlaylist;
+                    currentAlbum = selectedPlaylist; // Assuming `selectedPlaylist` contains album data
                     displaySongs(selectedPlaylist);
                 } else {
                     console.error('Playlist not found');
@@ -111,7 +111,7 @@
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
             songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
-                    <i class="fa fa-play play-icon" onclick='playSong(${index}, "${playlist.name}", "${song.path}", "song-${index}")'></i>
+                    <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
                     <span class="song-name">${song.name} - ${song.artist}</span>
                 </li>
             `).join('');
@@ -119,7 +119,7 @@
             songsContainer.style.display = 'block';
         }
 
-        function playSong(songIndex, playlistName, songPath, songElementId) {
+        function playSong(songIndex, songPath, songElementId) {
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
                 previousPlayingElement.classList.remove('playing');
@@ -132,11 +132,11 @@
             audio.src = songPath;
             audio.play();
 
-            const songName = currentPlaylist.songs[songIndex].name;
+            const songName = currentAlbum.songs[songIndex].name;
             playerSongName.textContent = songName;
-            playerAlbumImage.src = currentPlaylist.image;
+            playerAlbumImage.src = currentAlbum.image; // Use album image here
             playerElapsedTime.textContent = "0:00";
-            document.title = songName + " - " + currentPlaylist.name;
+            document.title = songName + " - " + currentAlbum.name;
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
@@ -154,6 +154,27 @@
             audio.onended = () => {
                 nextSong();
             };
+
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: songName,
+                    artist: currentAlbum.songs[songIndex].artist,
+                    album: currentAlbum.name,
+                    artwork: [
+                        { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', togglePlayPause);
+                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
+                navigator.mediaSession.setActionHandler('previoustrack', previousSong);
+                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+            }
         }
 
         function startElapsedTimeUpdate() {
@@ -170,18 +191,18 @@
         }
 
         function nextSong() {
-            if (currentSongIndex < currentPlaylist.songs.length - 1) {
+            if (currentSongIndex < currentAlbum.songs.length - 1) {
                 currentSongIndex++;
-                const song = currentPlaylist.songs[currentSongIndex];
-                playSong(currentSongIndex, currentPlaylist.name, song.path, `song-${currentSongIndex}`);
+                const song = currentAlbum.songs[currentSongIndex];
+                playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
             }
         }
 
         function previousSong() {
             if (currentSongIndex > 0) {
                 currentSongIndex--;
-                const song = currentPlaylist.songs[currentSongIndex];
-                playSong(currentSongIndex, currentPlaylist.name, song.path, `song-${currentSongIndex}`);
+                const song = currentAlbum.songs[currentSongIndex];
+                playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
             }
         }
 
@@ -203,3 +224,4 @@
     </script>
 </body>
 </html>
+
