@@ -190,37 +190,40 @@
         }
 
         function loadPlaylists() {
-            if (!db) {
-                console.error('Database is not initialized');
-                return;
-            }
+    if (!db) {
+        console.error('Database is not initialized');
+        return;
+    }
 
-            const transaction = db.transaction(['playlists'], 'readonly');
-            const objectStore = transaction.objectStore('playlists');
-            const request = objectStore.getAll();
+    const transaction = db.transaction(['playlists'], 'readonly');
+    const objectStore = transaction.objectStore('playlists');
+    const request = objectStore.getAll();
 
-            request.onsuccess = (event) => {
-                const playlists = event.target.result;
-                const playlistGrid = document.getElementById('playlistGrid');
-                playlistGrid.innerHTML = playlists.map((playlist) => `
-                    <div class="album-card playlist-card">
-                    <a href="/playlist.html?playlist=${playlist.name}">
-                        <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
-                    </a>
-                        <h3>${playlist.name}</h3>
-                    </div>
-                `).join('');
-                // Move the add playlist button to the start
-                playlistGrid.insertBefore(
-                    document.getElementById('addPlaylistButton'),
-                    playlistGrid.firstChild
-                );
-            };
+    request.onsuccess = (event) => {
+        const playlists = event.target.result;
+        const playlistGrid = document.getElementById('playlistGrid');
 
-            request.onerror = (event) => {
-                console.error('Error loading playlists:', event.target.errorCode);
-            };
-        }
+        // Insert the "Add Playlist" button at the start of the grid
+        playlistGrid.innerHTML = `
+            <div class="album-card add-playlist" id="addPlaylistButton">+</div>
+        `; // Ensures the button is always there
+
+        // Render existing playlists
+        playlistGrid.innerHTML += playlists.map((playlist) => `
+            <div class="album-card playlist-card">
+                <a href="/playlist.html?playlist=${playlist.name}">
+                    <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
+                </a>
+                <h3>${playlist.name}</h3>
+            </div>
+        `).join('');
+    };
+
+    request.onerror = (event) => {
+        console.error('Error loading playlists:', event.target.errorCode);
+    };
+}
+
 
         function loadAlbums() {
             const albumGrid = document.getElementById("albumGrid");
