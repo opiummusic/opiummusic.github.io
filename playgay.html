@@ -82,8 +82,8 @@
 
                 albumContainer.innerHTML = `
                     <div class="album-card">
-                        <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
-                        <h3>${currentAlbum.name}</h3>
+                        <img src="${currentAlbum.image}" alt="Playlist image">
+                        <h3>${new URLSearchParams(window.location.search).get('playlist')}</h3>
                         <ul>
                             ${currentAlbum.songs.map((song, index) => {
                                 const songName = song.replace(".mp3", "");
