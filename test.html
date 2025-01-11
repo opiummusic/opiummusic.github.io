@@ -208,7 +208,7 @@
             <div class="album-card add-playlist" id="addPlaylistButton">+</div>
         `; // Ensures the button is always there
 
-        // Render existing playlists
+
         playlistGrid.innerHTML += playlists.map((playlist) => `
             <div class="album-card playlist-card">
                 <a href="/playlist.html?playlist=${playlist.name}">
@@ -217,6 +217,9 @@
                 <h3>${playlist.name}</h3>
             </div>
         `).join('');
+
+
+        document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
     };
 
     request.onerror = (event) => {
