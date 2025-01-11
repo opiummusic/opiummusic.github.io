@@ -89,42 +89,15 @@
             };
         }
 
-        fetch('music/albums.json')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-          })
-          .then(data => {
-            albumData = data;
+        function loadAlbum() {
 
-            const artistName = getQueryParameter('artist');
-            const albumName = getQueryParameter('album');
-            if (artistName && albumName) {
-              loadAlbum(artistName, albumName);
-            } else {
-              document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching JSON:', error);
-          });
-
-        function getQueryParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        function loadAlbum(artistName, albumName) {
-            currentAlbum = albumData?.[artistName]?.[albumName];
 
             if (currentAlbum) {
                 const albumContainer = document.getElementById("albumContainer");
 
                 albumContainer.innerHTML = `
                     <div class="album-card">
-                        <img src="${currentAlbum.image}" alt="Playlist image">
+                        <img src="${playlist.image}" alt="Playlist image">
                          <h3>${new URLSearchParams(window.location.search).get('playlist')}</h3>
                         <ul>
                             ${currentAlbum.songs.map((song, index) => {
