@@ -97,14 +97,13 @@
         }
 
         function displayPlaylist(playlist) {
-            const playlistDetail = document.getElementById('playlistDetail');
             const playlistName = document.getElementById('playlistname');
             const playlistImage = document.getElementById('playlistImage');
 
             playlistName.textContent = playlist.name;
             playlistImage.src = playlist.image || 'default-image.jpg';
 
-            playlistDetail.style.display = 'block';
+
         }
 
         function displaySongs(playlist) {
