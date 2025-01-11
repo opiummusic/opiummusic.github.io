@@ -218,6 +218,7 @@ button:hover {
 
     <div id="songsContainer" style="display: none;">
         <img id="playlistImageInSongs" src="" alt="Playlist Image">
+        <h2 id="playlistName" style="margin-top: 10px; font-size: 20px; color: #fff;"></h2>
         <ul id="songs"></ul>
     </div>
 
@@ -291,6 +292,8 @@ button:hover {
             }
 
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
+            playlistNameElement.textContent = playlist.name || 'Unnamed Playlist';
+
             songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
                     <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
