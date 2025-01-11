@@ -26,18 +26,23 @@
             </div>
         </div>
         <div class="controls">
-            <i class="fa fa-backward" id="previousButton"></i>
-            <i class="fa fa-play" id="playPauseButton"></i>
-            <i class="fa fa-forward" id="nextButton"></i>
+            <i class="fa fa-backward" id="previousButton" aria-label="Previous song"></i>
+            <i class="fa fa-play" id="playPauseButton" aria-label="Play"></i>
+            <i class="fa fa-forward" id="nextButton" aria-label="Next song"></i>
         </div>
     </div>
 
-    <audio id="audioPlayer"></audio>
+    <audio id="audioPlayer" ></audio>
+
+    <div id="songsContainer" style="display: none;">
+        <img id="playlistImageInSongs" src="" alt="Playlist Image">
+        <ul id="songs"></ul>
+    </div>
 
     <script>
         let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
-        let currentAlbum = null;
+        let currentPlaylist = null;
         let playPauseButton = document.getElementById("playPauseButton");
         let playerStrip = document.getElementById("playerStrip");
         let playerSongName = document.getElementById("playerSongName");
@@ -45,8 +50,7 @@
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
 
-        let albumData = null;
-       let db;
+        let db;
         const request = indexedDB.open('playlistDB', 1);
 
         request.onerror = (event) => {
@@ -68,7 +72,10 @@
             const urlParams = new URLSearchParams(window.location.search);
             const playlistName = urlParams.get('playlist');
 
-            
+            if (!playlistName) {
+                console.error('No playlist name provided in the URL.');
+                return;
+            }
 
             const transaction = db.transaction(['playlists'], 'readonly');
             const objectStore = transaction.objectStore('playlists');
@@ -78,7 +85,12 @@
                 const playlists = event.target.result;
                 const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
-            
+                if (selectedPlaylist) {
+                    currentPlaylist = selectedPlaylist;
+                    displaySongs(selectedPlaylist);
+                } else {
+                    console.error('Playlist not found');
+                }
             };
 
             request.onerror = (event) => {
@@ -86,37 +98,28 @@
             };
         }
 
-        function loadAlbum() {
+        function displaySongs(playlist) {
+            const songsContainer = document.getElementById('songsContainer');
+            const songsList = document.getElementById('songs');
+            const playlistImageInSongs = document.getElementById('playlistImageInSongs');
 
-
-            if (currentAlbum) {
-                const albumContainer = document.getElementById("albumContainer");
-
-                albumContainer.innerHTML = `
-                    <div class="album-card">
-                        <img src="${playlist.image}" alt="Playlist image">
-                         <h3>${new URLSearchParams(window.location.search).get('playlist')}</h3>
-                        <ul>
-                            ${currentAlbum.songs.map((song, index) => {
-                                const songName = song.replace(".mp3", "");
-                                return `
-                                    <li id="song-${index}">
-                                        <i class="fa fa-play play-icon" onclick='playSong(${index}, ${JSON.stringify(playlist)}, "${song.path}", "song-${index}")', 'song-${index}')"></i>
-                                        <span class="song-name">${song.name}</span>
-                                    </li>
-                                `;
-                            }).join('')}
-                        </ul>
-                    </div>
-                `;
-            } else {
-                document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
+            if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
+                console.error('No songs found or songs is not an array');
+                return;
             }
+
+            playlistImageInSongs.src = playlist.image || 'default-image.jpg';
+            songsList.innerHTML = playlist.songs.map((song, index) => `
+                <li id="song-${index}">
+                    <i class="fa fa-play play-icon" onclick='playSong(${index}, "${playlist.name}", "${song.path}", "song-${index}")'></i>
+                    <span class="song-name">${song.name} - ${song.artist}</span>
+                </li>
+            `).join('');
+
+            songsContainer.style.display = 'block';
         }
-       
 
-        function playSong(songIndex, artistName, albumName, song, songElementId) {
-
+        function playSong(songIndex, playlistName, songPath, songElementId) {
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
                 previousPlayingElement.classList.remove('playing');
@@ -126,14 +129,14 @@
             currentPlayingElement.classList.add('playing');
 
             currentSongIndex = songIndex;
-            const songPath = `music/${albumName}/${encodeURIComponent(song)}`;
             audio.src = songPath;
-            localStorage.SongName = songPath;
-            playerSongName.textContent = song.replace(".mp3", ""); 
-            playerAlbumImage.src = currentAlbum.image;
-            playerElapsedTime.textContent = "0:00";
-            document.title = playerSongName.textContent + " - " + decodeURIComponent(artistName);
+            audio.play();
 
+            const songName = currentPlaylist.songs[songIndex].name;
+            playerSongName.textContent = songName;
+            playerAlbumImage.src = currentPlaylist.image;
+            playerElapsedTime.textContent = "0:00";
+            document.title = songName + " - " + currentPlaylist.name;
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
@@ -142,7 +145,6 @@
                 playerStrip.style.display = "flex";
             }).catch(error => {
                 console.error('Error playing the audio:', error);
-                console.log(songPath)
             });
 
             audio.onerror = () => {
@@ -152,27 +154,6 @@
             audio.onended = () => {
                 nextSong();
             };
-
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: song.replace(".mp3", ""),
-                    artist: decodeURIComponent(artistName),
-                    album: currentAlbum.name,
-                    artwork: [
-                        { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
-
-                navigator.mediaSession.setActionHandler('play', togglePlayPause);
-                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
-                navigator.mediaSession.setActionHandler('previoustrack', previousSong);
-                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
-            }
         }
 
         function startElapsedTimeUpdate() {
@@ -182,12 +163,31 @@
 
             elapsedTimeInterval = setInterval(() => {
                 const elapsedSeconds = Math.floor(audio.currentTime);
-                localStorage.SongTime = elapsedSeconds;
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
                 playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }, 1000);
         }
+
+        function nextSong() {
+            if (currentSongIndex < currentPlaylist.songs.length - 1) {
+                currentSongIndex++;
+                const song = currentPlaylist.songs[currentSongIndex];
+                playSong(currentSongIndex, currentPlaylist.name, song.path, `song-${currentSongIndex}`);
+            }
+        }
+
+        function previousSong() {
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+                const song = currentPlaylist.songs[currentSongIndex];
+                playSong(currentSongIndex, currentPlaylist.name, song.path, `song-${currentSongIndex}`);
+            }
+        }
+
+        playPauseButton.addEventListener("click", togglePlayPause);
+        document.getElementById("nextButton").addEventListener("click", nextSong);
+        document.getElementById("previousButton").addEventListener("click", previousSong);
 
         function togglePlayPause() {
             if (audio.paused) {
@@ -199,36 +199,6 @@
                 playPauseButton.classList.remove("fa-pause");
                 playPauseButton.classList.add("fa-play");
             }
-        }
-
-        function nextSong() {
-            if (currentSongIndex < currentAlbum.songs.length - 1) {
-                currentSongIndex++;
-                const song = currentAlbum.songs[currentSongIndex];
-                const artistName = getQueryParameter('artist');
-                const albumName = getQueryParameter('album');
-                playSong(currentSongIndex, artistName, albumName, song, `song-${currentSongIndex}`);
-            }
-        }
-
-        function previousSong() {
-            if (currentSongIndex > 0) {
-                currentSongIndex--;
-                const song = currentAlbum.songs[currentSongIndex];
-                const artistName = getQueryParameter('artist');
-                const albumName = getQueryParameter('album');
-                playSong(currentSongIndex, artistName, albumName, song, `song-${currentSongIndex}`);
-            }
-        }
-
-        playPauseButton.addEventListener("click", togglePlayPause);
-        document.getElementById("nextButton").addEventListener("click", nextSong);
-        document.getElementById("previousButton").addEventListener("click", previousSong);
-
-        if (!urlParams.get('playlist');) {
-            loadAlbum();
-        } else {
-            document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
     </script>
 </body>
