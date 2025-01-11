@@ -218,7 +218,7 @@ button:hover {
 
     <div id="songsContainer" style="display: none;">
         <img id="playlistImageInSongs" src="" alt="Playlist Image">
-        <h2 id="playlistName" style="margin-top: 10px; font-size: 20px; color: #fff;">Playlist</h2>
+        <h2 id="playlisth2" style="margin-top: 10px; font-size: 20px; color: #fff;">Playlist</h2>
         <ul id="songs"></ul>
     </div>
 
@@ -292,7 +292,7 @@ button:hover {
             }
 
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
-          //  playlistNameElement.textContent = playlist.name || 'Unnamed Playlist';
+            document.getElementById('playlisth2').textContent = playlist.name
 
             songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
