@@ -6,6 +6,7 @@
     <title>Opium Music Player - Playlist</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/styles.css" rel="stylesheet">
+    <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
 <body>
@@ -17,11 +18,9 @@
     <!-- Playlist Container -->
     <div class="playlist-container" id="playlistContainer">
         <h2>Selected Playlist</h2>
-        <div id="playlistDetail" style="display: none;">
-            <div class="album-card playlist-card">
-                <img id="playlistImage" src="" alt="Playlist Image">
-                <h3 id="playlistName"></h3>
-            </div>
+        <div id="playlistDetail" class="album-card playlist-card" style="display: none;">
+            <img id="playlistImage" src="" alt="Playlist Image">
+            <h3 id="playlistName"></h3>
         </div>
     </div>
 
@@ -171,45 +170,6 @@
             audio.onended = () => {
                 nextSongInPlaylist();
             };
-        }
-
-        function startElapsedTimeUpdate() {
-            const audio = document.getElementById('audioPlayer');
-            const playerElapsedTime = document.getElementById('playerElapsedTime');
-
-            setInterval(() => {
-                const elapsedSeconds = Math.floor(audio.currentTime);
-                const minutes = Math.floor(elapsedSeconds / 60);
-                const seconds = elapsedSeconds % 60;
-                playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
-
-        function nextSongInPlaylist() {
-            // Logic for next song
-        }
-
-        function previousSongInPlaylist() {
-            // Logic for previous song
-        }
-
-        document.getElementById("nextButton").addEventListener("click", nextSongInPlaylist);
-        document.getElementById("previousButton").addEventListener("click", previousSongInPlaylist);
-        document.getElementById("playPauseButton").addEventListener("click", togglePlayPause);
-
-        function togglePlayPause() {
-            const audio = document.getElementById('audioPlayer');
-            const playPauseButton = document.getElementById('playPauseButton');
-
-            if (audio.paused) {
-                audio.play();
-                playPauseButton.classList.remove("fa-play");
-                playPauseButton.classList.add("fa-pause");
-            } else {
-                audio.pause();
-                playPauseButton.classList.remove("fa-pause");
-                playPauseButton.classList.add("fa-play");
-            }
         }
     </script>
 </body>
