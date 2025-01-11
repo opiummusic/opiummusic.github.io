@@ -11,18 +11,18 @@
 </head>
     <style>
 /* updated styles */
-.player-strip img {
+.album-container img {
     width: 200px;
     height: 200px;
     border-radius: 6px;
     margin-right: 10px;
 }
-.player-strip ul {
+.album-container ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-.player-strip ul li {
+.album-container ul li {
     text-align: left;
     margin: 5px 0;
 }
@@ -33,21 +33,12 @@
         <i class="fa fa-arrow-left"></i>
     </button>
 
-    <!-- Playlist Container -->
-    <div class="album-container" id="playlistContainer">
-        <h2>Selected Playlist</h2>
-        <div id="playlistDetail" style="display: none;">
-            <div class="album-card playlist-card">
-                <img id="playlistImage" src="" alt="Playlist Image">
-                <h3 id="playlistName"></h3>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Songs Container -->
     <div class="album-container" id="songsContainer" style="display: none;">
-        <h2>Songs in Playlist</h2>
         <img id="playlistImageInSongs" src="" alt="Playlist Image">
+        <h2 id="playlistname">Loading...</h2>
         <ul id="songs" class="album-card">
             <!-- Songs will be dynamically loaded here -->
         </ul>
@@ -123,7 +114,7 @@
 
         function displayPlaylist(playlist) {
             const playlistDetail = document.getElementById('playlistDetail');
-            const playlistName = document.getElementById('playlistName');
+            const playlistName = document.getElementById('playlistname');
             const playlistImage = document.getElementById('playlistImage');
 
             playlistName.textContent = playlist.name;
