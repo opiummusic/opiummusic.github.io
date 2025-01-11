@@ -68,10 +68,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const playlistName = urlParams.get('playlist');
 
-            if (!playlistName) {
-                console.error('No playlist name provided in the URL.');
-                return;
-            }
+            
 
             const transaction = db.transaction(['playlists'], 'readonly');
             const objectStore = transaction.objectStore('playlists');
@@ -228,10 +225,8 @@
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
 
-        const artistName = getQueryParameter('artist');
-        const albumName = getQueryParameter('album');
-        if (artistName && albumName) {
-            loadAlbum(artistName, albumName);
+        if (!urlParams.get('playlist');) {
+            loadAlbum();
         } else {
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
