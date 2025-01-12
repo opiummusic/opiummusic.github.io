@@ -1,3 +1,11 @@
+1 file changed
+
+ 
+‎playlist.html
++1
+-1
+Original file line number	Diff line number	Diff line change
+@@ -1,403 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -286,7 +294,6 @@ button:hover {
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
                 document.getElementById('playlisth2').textContent = "Add some songs to your playlist fool";
-                document.getElementById("playlistImageInSongs").style.display = "none";
                 songsContainer.style.display = 'block';
                 return;
             }
@@ -294,12 +301,12 @@ button:hover {
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
             document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
 
-            songsList.innerHTML = playlist.songs.map((song, index) => 
+            songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
                     <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
                     <span class="song-name">${song.name} - ${song.artist}</span>
                 </li>
-            ).join('');
+            `).join('');
 
             songsContainer.style.display = 'block';
         }
@@ -352,7 +359,7 @@ button:hover {
                 const elapsedSeconds = Math.floor(audio.currentTime);
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
-                playerElapsedTime.textContent = ${minutes}:${seconds.toString().padStart(2, '0')};
+                playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }, 1000);
         }
 
@@ -363,21 +370,21 @@ button:hover {
                 currentSongIndex++;
             }
             const song = currentAlbum.songs[currentSongIndex];
-            playSong(currentSongIndex, song.path, song-${currentSongIndex});
+            playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
         }
 
         function previousSong() {
             if (currentSongIndex > 0) {
                 currentSongIndex--;
                 const song = currentAlbum.songs[currentSongIndex];
-                playSong(currentSongIndex, song.path, song-${currentSongIndex});
+                playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
             }
         }
 
         playPauseButton.addEventListener("click", togglePlayPause);
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
-        
+
         // Shuffle Button Logic
         document.getElementById("shuffleButton").addEventListener("click", () => {
             isShuffle = !isShuffle;
