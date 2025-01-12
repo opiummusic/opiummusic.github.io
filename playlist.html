@@ -252,7 +252,7 @@ button:hover {
         };
 
         function loadPlaylistFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
+            const urlParams = Object.fromEntries([...new URLSearchParams(window.location.search)].map(([k, v]) => [k, decodeURIComponent(v)]));
             const playlistName = urlParams.get('playlist');
 
             if (!playlistName) {
