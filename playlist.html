@@ -269,7 +269,7 @@ button:hover {
                     currentAlbum = selectedPlaylist; 
                     displaySongs(selectedPlaylist);
                 } else {
-                    alert("No songs added or no playlist exists")
+                    alert("No playlist exists")
                     console.error('Playlist not found');
                 }
             };
@@ -286,6 +286,7 @@ button:hover {
 
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
+                document.getElementById('playlisth2').textContent = "Add some songs to your playlist fool";
                 return;
             }
 
