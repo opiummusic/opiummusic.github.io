@@ -363,7 +363,7 @@
                 const playlists = event.target.result;
                 playlists.forEach((playlist, idx) => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = playlist.name;
+                    listItem.textContent = decodeURIComponent(playlist.name);
                     listItem.onclick = () => {
                         addToPlaylist(song, artistName, albumName, albumImage, playlist.id);
                         closeModal();
