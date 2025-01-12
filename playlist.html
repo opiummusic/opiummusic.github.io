@@ -356,15 +356,30 @@ button:hover {
             }, 1000);
         }
 
-        function nextSong() {
-            if (isShuffle) {
-                currentSongIndex = Math.floor(Math.random() * currentAlbum.songs.length); // Shuffle logic
-            } else if (currentSongIndex < currentAlbum.songs.length - 1) {
-                currentSongIndex++;
-            }
-            const song = currentAlbum.songs[currentSongIndex];
-            playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
+        let playedSongs = []; // Array to keep track of played songs
+
+function nextSong() {
+    if (isShuffle) {
+        if (playedSongs.length === currentAlbum.songs.length) {
+            // Reset history when all songs have been played
+            playedSongs = [];
         }
+
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * currentAlbum.songs.length);
+        } while (playedSongs.includes(randomIndex));
+
+        playedSongs.push(randomIndex);
+        currentSongIndex = randomIndex;
+    } else if (currentSongIndex < currentAlbum.songs.length - 1) {
+        currentSongIndex++;
+    }
+
+    const song = currentAlbum.songs[currentSongIndex];
+    playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
+}
+
 
         function previousSong() {
             if (currentSongIndex > 0) {
