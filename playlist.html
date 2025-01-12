@@ -7,8 +7,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
 </head>
-    <style>
-/* General Reset and Body Styles */
+<style>
+   /* General Reset and Body Styles */
 * {
     margin: 0;
     padding: 0;
@@ -189,8 +189,7 @@ button:hover {
     }
 }
 
-        
-    </style>
+</style>
 <body>
     <button class="back-button" onclick="window.location.href='play.html'">
         <i class="fa fa-arrow-left"></i>
@@ -211,6 +210,7 @@ button:hover {
             <i class="fa fa-backward" id="previousButton" aria-label="Previous song"></i>
             <i class="fa fa-play" id="playPauseButton" aria-label="Play"></i>
             <i class="fa fa-forward" id="nextButton" aria-label="Next song"></i>
+            <i class="fa fa-random" id="shuffleButton" aria-label="Shuffle"></i> <!-- Shuffle button -->
         </div>
     </div>
 
@@ -232,6 +232,7 @@ button:hover {
         let playerAlbumImage = document.getElementById("playerAlbumImage");
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
+        let isShuffle = false;  // Track shuffle state
 
         let db;
         const request = indexedDB.open('playlistDB', 1);
@@ -251,35 +252,35 @@ button:hover {
             objectStore.createIndex('name', 'name', { unique: false });
         };
 
-       function loadPlaylistFromURL() {
-    const urlParams = new URLSearchParams(window.location.search); // Use URLSearchParams directly
-    const playlistName = urlParams.get('playlist'); // Use .get() on URLSearchParams
+        function loadPlaylistFromURL() {
+            const urlParams = new URLSearchParams(window.location.search); 
+            const playlistName = urlParams.get('playlist');
 
-    if (!playlistName) {
-        console.error('No playlist name provided in the URL.');
-        return;
-    }
+            if (!playlistName) {
+                console.error('No playlist name provided in the URL.');
+                return;
+            }
 
-    const transaction = db.transaction(['playlists'], 'readonly');
-    const objectStore = transaction.objectStore('playlists');
-    const request = objectStore.getAll();
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
 
-    request.onsuccess = (event) => {
-        const playlists = event.target.result;
-        const selectedPlaylist = playlists.find(p => p.name === playlistName);
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
-        if (selectedPlaylist) {
-            currentAlbum = selectedPlaylist; 
-            displaySongs(selectedPlaylist);
-        } else {
-            console.error('Playlist not found');
+                if (selectedPlaylist) {
+                    currentAlbum = selectedPlaylist; 
+                    displaySongs(selectedPlaylist);
+                } else {
+                    console.error('Playlist not found');
+                }
+            };
+
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
         }
-    };
-
-    request.onerror = (event) => {
-        console.error('Error loading playlists:', event.target.errorCode);
-    };
-}
 
         function displaySongs(playlist) {
             const songsContainer = document.getElementById('songsContainer');
@@ -292,7 +293,7 @@ button:hover {
             }
 
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
-            document.getElementById('playlisth2').textContent = playlist.name
+            document.getElementById('playlisth2').textContent = playlist.name;
 
             songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
@@ -306,21 +307,22 @@ button:hover {
 
         function playSong(songIndex, songPath, songElementId) {
             const previousPlayingElement = document.querySelector('#songs li.playing');
-if (previousPlayingElement) {
-    previousPlayingElement.classList.remove('playing');
-}
+            if (previousPlayingElement) {
+                previousPlayingElement.classList.remove('playing');
+            }
 
-const currentPlayingElement = document.getElementById(songElementId);
-if (currentPlayingElement) {
-    currentPlayingElement.classList.add('playing');
-}           
+            const currentPlayingElement = document.getElementById(songElementId);
+            if (currentPlayingElement) {
+                currentPlayingElement.classList.add('playing');
+            }
+
             currentSongIndex = songIndex;
             audio.src = songPath;
             audio.play();
 
             const songName = currentAlbum.songs[songIndex].name;
             playerSongName.textContent = songName;
-            playerAlbumImage.src = currentAlbum.image; // Use album image here
+            playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
             document.title = songName + " - " + currentAlbum.name;
 
@@ -340,29 +342,6 @@ if (currentPlayingElement) {
             audio.onended = () => {
                 nextSong();
             };
-
-            if ('mediaSession' in navigator) {
-                const albumImage = currentAlbum.songs[songIndex].albumImage || currentAlbum.image;
-
-    navigator.mediaSession.metadata = new MediaMetadata({
-        title: songName,
-        artist: currentAlbum.songs[songIndex].artist,
-        album: currentAlbum.name,
-        artwork: [
-            { src: albumImage, sizes: '96x96', type: 'image/jpeg' },
-            { src: albumImage, sizes: '128x128', type: 'image/jpeg' },
-            { src: albumImage, sizes: '192x192', type: 'image/jpeg' },
-            { src: albumImage, sizes: '256x256', type: 'image/jpeg' },
-            { src: albumImage, sizes: '384x384', type: 'image/jpeg' },
-            { src: albumImage, sizes: '512x512', type: 'image/jpeg' }
-        ]
-    });
-
-                navigator.mediaSession.setActionHandler('play', togglePlayPause);
-                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
-                navigator.mediaSession.setActionHandler('previoustrack', previousSong);
-                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
-            }
         }
 
         function startElapsedTimeUpdate() {
@@ -379,11 +358,13 @@ if (currentPlayingElement) {
         }
 
         function nextSong() {
-            if (currentSongIndex < currentAlbum.songs.length - 1) {
+            if (isShuffle) {
+                currentSongIndex = Math.floor(Math.random() * currentAlbum.songs.length); // Shuffle logic
+            } else if (currentSongIndex < currentAlbum.songs.length - 1) {
                 currentSongIndex++;
-                const song = currentAlbum.songs[currentSongIndex];
-                playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
             }
+            const song = currentAlbum.songs[currentSongIndex];
+            playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
         }
 
         function previousSong() {
@@ -397,6 +378,16 @@ if (currentPlayingElement) {
         playPauseButton.addEventListener("click", togglePlayPause);
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
+        
+        // Shuffle Button Logic
+        document.getElementById("shuffleButton").addEventListener("click", () => {
+            isShuffle = !isShuffle;
+            document.getElementById("shuffleButton").classList.toggle("fa-random", !isShuffle);
+            document.getElementById("shuffleButton").classList.toggle("fa-random active", isShuffle);
+            if (isShuffle) {
+                nextSong(); // Start with a random song when shuffle is enabled
+            }
+        });
 
         function togglePlayPause() {
             if (audio.paused) {
