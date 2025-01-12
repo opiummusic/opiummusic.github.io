@@ -182,7 +182,7 @@ function createNewPlaylist() {
                 request.onsuccess = () => {
                     console.log('Playlist added to the database');
                     loadPlaylists();
-                    alert("Playlist " + decodeURIComponent(playlistName) + "succsefully created!")
+                    alert("Playlist " + decodeURIComponent(playlistName) + " succsefully created!")
                 };
 
                 request.onerror = (event) => {
