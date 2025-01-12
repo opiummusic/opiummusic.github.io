@@ -358,6 +358,8 @@ button:hover {
 
         let playedSongs = []; // Array to keep track of played songs
 
+let playedSongs = []; // Array to keep track of played songs
+
 function nextSong() {
     if (isShuffle) {
         if (playedSongs.length === currentAlbum.songs.length) {
@@ -365,11 +367,16 @@ function nextSong() {
             playedSongs = [];
         }
 
-        let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * currentAlbum.songs.length);
-        } while (playedSongs.includes(randomIndex));
+        // Find a song that hasn't been played yet
+        let availableSongs = currentAlbum.songs.map((_, index) => index).filter(index => !playedSongs.includes(index));
+        if (availableSongs.length === 0) {
+            // All songs have been played, reset the available list
+            playedSongs = [];
+            availableSongs = currentAlbum.songs.map((_, index) => index);
+        }
 
+        // Select a random song from the available list
+        const randomIndex = availableSongs[Math.floor(Math.random() * availableSongs.length)];
         playedSongs.push(randomIndex);
         currentSongIndex = randomIndex;
     } else if (currentSongIndex < currentAlbum.songs.length - 1) {
@@ -379,6 +386,7 @@ function nextSong() {
     const song = currentAlbum.songs[currentSongIndex];
     playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
 }
+
 
 
         function previousSong() {
