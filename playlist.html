@@ -257,11 +257,6 @@ button:hover {
             const urlParams = new URLSearchParams(window.location.search); 
             const playlistName = urlParams.get('playlist');
 
-            if (!playlistName) {
-                console.error('No playlist name provided in the URL.');
-                return;
-            }
-
             const transaction = db.transaction(['playlists'], 'readonly');
             const objectStore = transaction.objectStore('playlists');
             const request = objectStore.getAll();
@@ -274,6 +269,7 @@ button:hover {
                     currentAlbum = selectedPlaylist; 
                     displaySongs(selectedPlaylist);
                 } else {
+                    alert("No songs added or no playlist exists")
                     console.error('Playlist not found');
                 }
             };
