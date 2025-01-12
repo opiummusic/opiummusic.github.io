@@ -251,35 +251,35 @@ button:hover {
             objectStore.createIndex('name', 'name', { unique: false });
         };
 
-        function loadPlaylistFromURL() {
-            const urlParams = Object.fromEntries([...new URLSearchParams(window.location.search)].map(([k, v]) => [k, decodeURIComponent(v)]));
-            const playlistName = urlParams.get('playlist');
+       function loadPlaylistFromURL() {
+    const urlParams = new URLSearchParams(window.location.search); // Use URLSearchParams directly
+    const playlistName = urlParams.get('playlist'); // Use .get() on URLSearchParams
 
-            if (!playlistName) {
-                console.error('No playlist name provided in the URL.');
-                return;
-            }
+    if (!playlistName) {
+        console.error('No playlist name provided in the URL.');
+        return;
+    }
 
-            const transaction = db.transaction(['playlists'], 'readonly');
-            const objectStore = transaction.objectStore('playlists');
-            const request = objectStore.getAll();
+    const transaction = db.transaction(['playlists'], 'readonly');
+    const objectStore = transaction.objectStore('playlists');
+    const request = objectStore.getAll();
 
-            request.onsuccess = (event) => {
-                const playlists = event.target.result;
-                const selectedPlaylist = playlists.find(p => p.name === playlistName);
+    request.onsuccess = (event) => {
+        const playlists = event.target.result;
+        const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
-                if (selectedPlaylist) {
-                    currentAlbum = selectedPlaylist; // Assuming `selectedPlaylist` contains album data
-                    displaySongs(selectedPlaylist);
-                } else {
-                    console.error('Playlist not found');
-                }
-            };
-
-            request.onerror = (event) => {
-                console.error('Error loading playlists:', event.target.errorCode);
-            };
+        if (selectedPlaylist) {
+            currentAlbum = selectedPlaylist; 
+            displaySongs(selectedPlaylist);
+        } else {
+            console.error('Playlist not found');
         }
+    };
+
+    request.onerror = (event) => {
+        console.error('Error loading playlists:', event.target.errorCode);
+    };
+}
 
         function displaySongs(playlist) {
             const songsContainer = document.getElementById('songsContainer');
