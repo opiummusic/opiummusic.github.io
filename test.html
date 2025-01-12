@@ -159,8 +159,8 @@
 
         document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
 
-        function createNewPlaylist() {
-    const playlistName = prompt("Enter playlist name:");
+function createNewPlaylist() {
+    const playlistName = encodeURIComponent(prompt("Enter playlist name:"));
     if (playlistName) {
         const input = document.createElement('input');
         input.type = 'file';
