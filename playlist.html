@@ -294,12 +294,12 @@ button:hover {
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
             document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
 
-            songsList.innerHTML = playlist.songs.map((song, index) => `
+            songsList.innerHTML = playlist.songs.map((song, index) => 
                 <li id="song-${index}">
                     <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
                     <span class="song-name">${song.name} - ${song.artist}</span>
                 </li>
-            `).join('');
+            ).join('');
 
             songsContainer.style.display = 'block';
         }
@@ -352,48 +352,25 @@ button:hover {
                 const elapsedSeconds = Math.floor(audio.currentTime);
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
-                playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                playerElapsedTime.textContent = ${minutes}:${seconds.toString().padStart(2, '0')};
             }, 1000);
         }
 
-        let playedSongs = []; // Array to keep track of played songs
-
-let playedSongs = []; // Array to keep track of played songs
-
-function nextSong() {
-    if (isShuffle) {
-        if (playedSongs.length === currentAlbum.songs.length) {
-            // Reset history when all songs have been played
-            playedSongs = [];
+        function nextSong() {
+            if (isShuffle) {
+                currentSongIndex = Math.floor(Math.random() * currentAlbum.songs.length); // Shuffle logic
+            } else if (currentSongIndex < currentAlbum.songs.length - 1) {
+                currentSongIndex++;
+            }
+            const song = currentAlbum.songs[currentSongIndex];
+            playSong(currentSongIndex, song.path, song-${currentSongIndex});
         }
-
-        // Find a song that hasn't been played yet
-        let availableSongs = currentAlbum.songs.map((_, index) => index).filter(index => !playedSongs.includes(index));
-        if (availableSongs.length === 0) {
-            // All songs have been played, reset the available list
-            playedSongs = [];
-            availableSongs = currentAlbum.songs.map((_, index) => index);
-        }
-
-        // Select a random song from the available list
-        const randomIndex = availableSongs[Math.floor(Math.random() * availableSongs.length)];
-        playedSongs.push(randomIndex);
-        currentSongIndex = randomIndex;
-    } else if (currentSongIndex < currentAlbum.songs.length - 1) {
-        currentSongIndex++;
-    }
-
-    const song = currentAlbum.songs[currentSongIndex];
-    playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
-}
-
-
 
         function previousSong() {
             if (currentSongIndex > 0) {
                 currentSongIndex--;
                 const song = currentAlbum.songs[currentSongIndex];
-                playSong(currentSongIndex, song.path, `song-${currentSongIndex}`);
+                playSong(currentSongIndex, song.path, song-${currentSongIndex});
             }
         }
 
