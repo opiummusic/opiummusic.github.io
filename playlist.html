@@ -294,7 +294,7 @@ button:hover {
             }
 
             playlistImageInSongs.src = playlist.image || 'default-image.jpg';
-            document.getElementById('playlisth2').textContent = playlist.name;
+            document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
 
             songsList.innerHTML = playlist.songs.map((song, index) => `
                 <li id="song-${index}">
@@ -325,7 +325,7 @@ button:hover {
             playerSongName.textContent = songName;
             playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
-            document.title = songName + " - " + currentAlbum.name;
+            document.title = songName + " - " + decodeURIComponent(currentAlbum.name);
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
