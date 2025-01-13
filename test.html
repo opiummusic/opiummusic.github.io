@@ -60,9 +60,9 @@
         let playerAlbumImage = document.getElementById("playerAlbumImage");
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
+        let isShuffle = false;
         let db;
         
-        // Open IndexedDB
         const request = indexedDB.open('playlistDB', 1);
 
         request.onerror = (event) => {
@@ -79,65 +79,59 @@
             const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
             objectStore.createIndex('name', 'name', { unique: false });
         };
+      function loadPlaylistFromURL() {
+            const urlParams = new URLSearchParams(window.location.search); 
+            const playlistName = urlParams.get('playlist');
 
-        let albumData = null;
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
 
-        fetch('music/albums.json')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-          })
-          .then(data => {
-            albumData = data;
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
-            const artistName = getQueryParameter('artist');
-            const albumName = getQueryParameter('album');
-            if (artistName && albumName) {
-              loadAlbum(artistName, albumName);
-            } else {
-              document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching JSON:', error);
-          });
+                if (selectedPlaylist) {
+                    currentAlbum = selectedPlaylist; 
+                    displaySongs(selectedPlaylist);
+                } else {
+                    alert("No playlist exists")
+                    console.error('Playlist not found');
+                }
+            };
 
-        function getQueryParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
         }
 
-        function loadAlbum(artistName, albumName) {
-            currentAlbum = albumData?.[artistName]?.[albumName];
+         function displaySongs(playlist) {
+            const songsContainer = document.getElementById('songsContainer');
+            const songsList = document.getElementById('songs');
+            const playlistImageInSongs = document.getElementById('playlistImageInSongs');
 
-            if (currentAlbum) {
-                const albumContainer = document.getElementById("albumContainer");
+            if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
+                console.error('No songs found or songs is not an array');
+                document.getElementById('playlisth2').textContent = "Add some songs to your playlist fool";
+                playlistImageInSongs.style.display = 'none';
+                songsContainer.style.display = 'block';
+                return;
+            }
 
-                albumContainer.innerHTML = `
-                    <div class="album-card">
-                        <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
-                        <h3>${currentAlbum.name}</h3>
-                        <ul>
-                            ${currentAlbum.songs.map((song, index) => {
-                                const songName = song.replace(".mp3", "");
-                                return `
-                                    <li id="song-${index}">
-                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
-                                        <span class="song-name">${songName}</span>
-                                        <button class="trash" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
+            playlistImageInSongs.src = playlist.image || 'default-image.jpg';
+            document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
+
+            songsList.innerHTML = playlist.songs.map((song, index) => `
+                 <li id="song-${index}">
+                                        <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
+                                        <span class="song-name">${song.name} - ${song.artist}</span>
+                                        <button class="trash" onclick="removesong()">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </li>
-                                `;
-                            }).join('')}
-                        </ul>
-                    </div>
-                `;
-            } else {
-                document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
-            }
+            `).join('');
+
+            songsContainer.style.display = 'block';
         }
 
         function playSong(songIndex, artistName, albumName, song, songElementId) {
@@ -256,72 +250,6 @@
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
         }
 
-        function openPlaylistModal(song, artistName, albumName, albumImage, index) {
-            const modal = document.getElementById("playlistModal");
-            const playlistList = document.getElementById("playlistList");
-
-            // Clear previous playlist items
-            playlistList.innerHTML = '';
-
-            // Add playlists to the modal
-            const transaction = db.transaction(['playlists'], 'readonly');
-            const objectStore = transaction.objectStore('playlists');
-            const request = objectStore.getAll();
-
-            request.onsuccess = (event) => {
-                const playlists = event.target.result;
-                playlists.forEach((playlist, idx) => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = decodeURIComponent(playlist.name);
-                    listItem.onclick = () => {
-                        addToPlaylist(song, artistName, albumName, albumImage, playlist.id);
-                        closeModal();
-                    };
-                    playlistList.appendChild(listItem);
-                });
-            };
-
-            request.onerror = (event) => {
-                console.error('Error loading playlists:', event.target.errorCode);
-            };
-
-            modal.style.display = "block";
-        }
-
-        function closeModal() {
-            const modal = document.getElementById("playlistModal");
-            modal.style.display = "none";
-        }
-
-        function addToPlaylist(song, artistName, albumName, albumImage, playlistId) {
-            const transaction = db.transaction(['playlists'], 'readwrite');
-            const objectStore = transaction.objectStore('playlists');
-            const request = objectStore.get(playlistId);
-
-            request.onsuccess = (event) => {
-                const playlist = event.target.result;
-
-                if (playlist) {
-                    playlist.songs.push({
-                        name: song.replace(".mp3", ""),
-                        artist: artistName,
-                        album: albumName,
-                        albumArt: albumImage,
-                        path: `music/${albumName}/${encodeURIComponent(song)}`
-                    });
-                    const updateRequest = objectStore.put(playlist);
-
-                    updateRequest.onsuccess = () => {
-                        alert('Song added to playlist!');
-                    };
-
-                    updateRequest.onerror = (event) => {
-                        console.error('Error updating playlist:', event.target.errorCode);
-                    };
-                } else {
-                    alert('Invalid playlist selection!');
-                }
-            };
 
             request.onerror = (event) => {
                 console.error('Error retrieving playlist:', event.target.errorCode);
