@@ -286,6 +286,7 @@ button:hover {
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
                 document.getElementById('playlisth2').textContent = "Add some songs to your playlist fool";
+                playlistImageInSongs.style.display = 'none';
                 songsContainer.style.display = 'block';
                 return;
             }
