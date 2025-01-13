@@ -8,9 +8,104 @@
     <link href="assets/styles.css" rel="stylesheet">
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.8); /* Black with opacity */
+            backdrop-filter: blur(5px); /* Add a blur effect for modern look */
+        }
+
+        .modal-content {
+            background-color: #2c2c2c; /* Dark background */
+            color: #ffffff; /* White text */
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: none; /* Remove border */
+            border-radius: 10px; /* Rounded corners */
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px; /* Maximum width */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        }
+
+        .close {
+            color: #ffffff; /* White color */
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #1e90ff; /* Blue accent color on hover/focus */
+            text-decoration: none;
+        }
+
+        .playlist-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .playlist-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #3a3a3a; /* Slightly lighter background */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .playlist-list li:hover {
+            background-color: #4a4a4a; /* Slightly darker on hover */
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: #1e90ff; /* Blue accent color */
+            text-align: center;
+        }
+
+        .modal button {
+            background-color: #1e90ff; /* Blue accent color */
+            color: #ffffff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .modal button:hover {
+            background-color: #1c86ee; /* Darker blue accent color on hover */
+        }
+
+        /* Add-to-playlist button styles */
+        .add-to-playlist-button {
+            background: none;
+            border: none;
+            color: #1e90ff; /* Blue accent color */
+            cursor: pointer;
+            font-size: 1.2em; /* Increase the size of the icon */
+            padding: 5px;
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        .add-to-playlist-button:hover {
+            color: #1c86ee; /* Darker blue on hover */
+        }
+    </style>
 </head>
 <body>
-    <button class="back-button" onclick="window.location.href='play.html'">
+    <button class="back-button" onclick="window.location.href='test.html'">
         <i class="fa fa-arrow-left"></i>
     </button>
 
@@ -34,6 +129,18 @@
 
     <audio id="audioPlayer"></audio>
 
+    <!-- The Modal -->
+    <div id="playlistModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Select Playlist</h2>
+            <ul id="playlistList" class="playlist-list">
+                <!-- Playlists will be dynamically added here -->
+            </ul>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
     <script>
         let audio = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
@@ -44,9 +151,28 @@
         let playerAlbumImage = document.getElementById("playerAlbumImage");
         let playerElapsedTime = document.getElementById("playerElapsedTime");
         let elapsedTimeInterval = null;
+        let db;
+        
+        // Open IndexedDB
+        const request = indexedDB.open('playlistDB', 1);
+
+        request.onerror = (event) => {
+            console.error('Database error:', event.target.errorCode);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            loadPlaylists();
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+        };
 
         let albumData = null;
-    
+
         fetch('music/albums.json')
           .then(response => {
             if (!response.ok) {
@@ -91,6 +217,9 @@
                                     <li id="song-${index}">
                                         <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
+                                        <button class="add-to-playlist-button" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
                                     </li>
                                 `;
                             }).join('')}
@@ -101,10 +230,8 @@
                 document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
             }
         }
-       
 
         function playSong(songIndex, artistName, albumName, song, songElementId) {
-
             const previousPlayingElement = document.querySelector('.album-card ul li.playing');
             if (previousPlayingElement) {
                 previousPlayingElement.classList.remove('playing');
@@ -121,7 +248,6 @@
             playerAlbumImage.src = currentAlbum.image;
             playerElapsedTime.textContent = "0:00";
             document.title = playerSongName.textContent + " - " + decodeURIComponent(artistName);
-
 
             audio.play().then(() => {
                 startElapsedTimeUpdate();
@@ -219,6 +345,78 @@
             loadAlbum(artistName, albumName);
         } else {
             document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
+        }
+
+        function openPlaylistModal(song, artistName, albumName, albumImage, index) {
+            const modal = document.getElementById("playlistModal");
+            const playlistList = document.getElementById("playlistList");
+
+            // Clear previous playlist items
+            playlistList.innerHTML = '';
+
+            // Add playlists to the modal
+            const transaction = db.transaction(['playlists'], 'readonly');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.getAll();
+
+            request.onsuccess = (event) => {
+                const playlists = event.target.result;
+                playlists.forEach((playlist, idx) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = decodeURIComponent(playlist.name);
+                    listItem.onclick = () => {
+                        addToPlaylist(song, artistName, albumName, albumImage, playlist.id);
+                        closeModal();
+                    };
+                    playlistList.appendChild(listItem);
+                });
+            };
+
+            request.onerror = (event) => {
+                console.error('Error loading playlists:', event.target.errorCode);
+            };
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("playlistModal");
+            modal.style.display = "none";
+        }
+
+        function addToPlaylist(song, artistName, albumName, albumImage, playlistId) {
+            const transaction = db.transaction(['playlists'], 'readwrite');
+            const objectStore = transaction.objectStore('playlists');
+            const request = objectStore.get(playlistId);
+
+            request.onsuccess = (event) => {
+                const playlist = event.target.result;
+
+                if (playlist) {
+                    playlist.songs.push({
+                        name: song.replace(".mp3", ""),
+                        artist: artistName,
+                        album: albumName,
+                        albumArt: albumImage,
+                        path: `music/${albumName}/${encodeURIComponent(song)}`
+                    });
+                    const updateRequest = objectStore.put(playlist);
+
+                    updateRequest.onsuccess = () => {
+                        alert('Song added to playlist!');
+                    };
+
+                    updateRequest.onerror = (event) => {
+                        console.error('Error updating playlist:', event.target.errorCode);
+                    };
+                } else {
+                    alert('Invalid playlist selection!');
+                }
+            };
+
+            request.onerror = (event) => {
+                console.error('Error retrieving playlist:', event.target.errorCode);
+            };
         }
     </script>
 </body>
