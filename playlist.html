@@ -228,6 +228,9 @@ button:hover {
                 <li id="song-${index}">
                     <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
                     <span class="song-name">${song.name} - ${song.artist}</span>
+                     <button class="trash" onclick="removeSong(${index})">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </li>
             `).join('');
 
