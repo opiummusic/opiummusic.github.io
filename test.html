@@ -4,251 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music Player</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> 
-    <meta name="apple-mobile-web-app-title" content="Opium Music Player">
-    <link rel="manifest" href="manifest.json">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/styles.css" rel="stylesheet">
+    <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
     <style>
-        body {
-            background: #000000;
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .header {
-            background: #ffffff;
-            color: #000000;
-            padding: 10px 0;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .playlist-container, .album-container {
-            padding: 20px;
-        }
-
-        .playlist-header, .album-container h2 {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .playlist-header h2, .album-container h2 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .playlist-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 20px;
-            justify-content: flex-start;
-            align-items: flex-start; /* Aligns items to the top */
-        }
-
-        .album-card, .playlist-card {
-            background: #1f1f1f;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 150px;
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            position: relative; /* Added for positioning edit/delete buttons */
-        }
-
-        .album-card img, .playlist-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
-
-        .album-card h3, .playlist-card h3 {
-            font-size: 1rem;
-            margin: 0;
-            color: #ffffff;
-            text-align: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .edit-button, .delete-button {
-            background-color: #ff0000;
-            color: #ffffff;
-            border: none;
-            padding: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            position: absolute; /* Absolute positioning for buttons */
-            top: 5px;
-        }
-
-        .edit-button {
-            right: 40px;
-        }
-
-        .delete-button {
-            right: 5px;
-        }
-
-        .add-playlist {
-            background: #1f1f1f;
-            border: none;
-            color: #ffffff;
-            font-size: 3rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-            width: 150px;
-            height: 200px;
-            flex-shrink: 0; /* Prevents the button from shrinking */
-            order: -1; /* Ensures it appears first */
-        }
-
-        .loading-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #000000;
-            color: #ffffff;
-            font-size: 1.5rem;
-        }
-
-        /* Hamburger Menu */
-        .hamburger-menu {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #1f1f1f;
-            color: #ffffff;
-            border: none;
-            font-size: 2rem;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        /* Modal Styles */
+        /* Modal styles */
         .modal {
             display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 999;
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
             left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.8); /* Black with opacity */
+            backdrop-filter: blur(5px); /* Add a blur effect for modern look */
         }
 
         .modal-content {
-            background-color: #1f1f1f;
-            margin: 15% auto;
+            background-color: #2c2c2c; /* Dark background */
+            color: #ffffff; /* White text */
+            margin: 15% auto; /* 15% from the top and centered */
             padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 400px;
-            border-radius: 8px;
-            text-align: center;
-            color: #ffffff;
+            border: none; /* Remove border */
+            border-radius: 10px; /* Rounded corners */
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px; /* Maximum width */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
         }
 
-        .close-button {
-            color: #aaa;
+        .close {
+            color: #ffffff; /* White color */
             float: right;
-            font-size: 2rem;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .close-button:hover,
-        .close-button:focus {
-            color: #ffffff;
+        .close:hover,
+        .close:focus {
+            color: #1e90ff; /* Blue accent color on hover/focus */
             text-decoration: none;
-            cursor: pointer;
         }
 
-        .menu-options {
+        .playlist-list {
             list-style-type: none;
             padding: 0;
         }
 
-        .menu-options li {
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
+        .playlist-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #3a3a3a; /* Slightly lighter background */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition */
         }
 
-        .menu-options li img {
-            margin-right: 10px;
-            width: 24px;
-            height: 24px;
+        .playlist-list li:hover {
+            background-color: #4a4a4a; /* Slightly darker on hover */
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: #1e90ff; /* Blue accent color */
+            text-align: center;
+        }
+
+        .modal button {
+            background-color: #1e90ff; /* Blue accent color */
+            color: #ffffff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .modal button:hover {
+            background-color: #1c86ee; /* Darker blue accent color on hover */
+        }
+
+        /* Add-to-playlist button styles */
+        .add-to-playlist-button {
+            background: none;
+            border: none;
+            color: #1e90ff; /* Blue accent color */
+            cursor: pointer;
+            font-size: 1.2em; /* Increase the size of the icon */
+            padding: 5px;
+            transition: color 0.3s; /* Smooth transition for color change */
+        }
+
+        .add-to-playlist-button:hover {
+            color: #1c86ee; /* Darker blue on hover */
         }
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loadingScreen">Loading Songs...</div>
-    <div class="header">Opium Music Player</div>
-    <div class="playlist-container" id="playlistContainer">
-        <div class="playlist-header">
-            <h2>Playlists:</h2>
-        </div>
-        <div class="playlist-grid" id="playlistGrid">
-            <div class="album-card add-playlist" id="addPlaylistButton">+</div>
-        </div>
-    </div>
-    <div class="album-container">
-        <h2>Albums:</h2>
-        <div class="album-grid" id="albumGrid"></div>
+    <button class="back-button" onclick="window.location.href='play.html'">
+        <i class="fa fa-arrow-left"></i>
+    </button>
+
+    <div class="album-container" id="albumContainer">
     </div>
 
-    <!-- Hamburger Menu -->
-    <div class="hamburger-menu" id="hamburgerMenu">
-        &#9776;
+    <div class="player-strip" id="playerStrip" style="display: none;">
+        <div class="song-info">
+            <img id="playerAlbumImage" src="" alt="Album Art">
+            <div>
+                <span id="playerSongName"></span>
+                <span id="playerElapsedTime">0:00</span>
+            </div>
+        </div>
+        <div class="controls">
+            <i class="fa fa-backward" id="previousButton"></i>
+            <i class="fa fa-play" id="playPauseButton"></i>
+            <i class="fa fa-forward" id="nextButton"></i>
+        </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal" id="modal">
+    <audio id="audioPlayer"></audio>
+
+    <!-- The Modal -->
+    <div id="playlistModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" id="closeButton">&times;</span>
-            <ul class="menu-options">
-                <li onclick="editPlaylist()"><img src="path/to/edit-icon.png" alt="Edit Icon"> Edit Playlist</li>
-                <li onclick="deletePlaylist()"><img src="path/to/delete-icon.png" alt="Delete Icon"> Delete Playlist</li>
-                <li><img src="path/to/settings-icon.png" alt="Settings Icon"> Settings</li>
-                <!-- Add more options as needed -->
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Select Playlist</h2>
+            <ul id="playlistList" class="playlist-list">
+                <!-- Playlists will be dynamically added here -->
             </ul>
+            <button onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
     <script>
+        let audio = document.getElementById('audioPlayer');
+        let currentSongIndex = 0;
+        let currentAlbum = null;
+        let playPauseButton = document.getElementById("playPauseButton");
+        let playerStrip = document.getElementById("playerStrip");
+        let playerSongName = document.getElementById("playerSongName");
+        let playerAlbumImage = document.getElementById("playerAlbumImage");
+        let playerElapsedTime = document.getElementById("playerElapsedTime");
+        let elapsedTimeInterval = null;
         let db;
-        let albums = [];
-
+        
+        // Open IndexedDB
         const request = indexedDB.open('playlistDB', 1);
 
         request.onerror = (event) => {
@@ -266,219 +171,253 @@
             objectStore.createIndex('name', 'name', { unique: false });
         };
 
-        document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
+        let albumData = null;
 
-        function createNewPlaylist() {
-            const playlistName = encodeURIComponent(prompt("Enter playlist name:"));
-            if (playlistName) {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (event) => {
-                    const file = event.target.files[0];
-                    if (!file) {
-                        alert('You must select a photo to create a playlist.');
-                        return; // Stop the process if no file is selected
-                    }
+        fetch('music/albums.json')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(data => {
+            albumData = data;
 
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const image = e.target.result;
-                        const transaction = db.transaction(['playlists'], 'readwrite');
-                        const objectStore = transaction.objectStore('playlists');
-                        const request = objectStore.add({ name: playlistName, image: image, songs: [] });
+            const artistName = getQueryParameter('artist');
+            const albumName = getQueryParameter('album');
+            if (artistName && albumName) {
+              loadAlbum(artistName, albumName);
+            } else {
+              document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching JSON:', error);
+          });
 
-                        request.onsuccess = () => {
-                            console.log('Playlist added to the database');
-                            loadPlaylists();
-                            alert("Playlist " + decodeURIComponent(playlistName) + " successfully created!")
-                        };
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
 
-                        request.onerror = (event) => {
-                            console.error('Error adding playlist:', event.target.errorCode);
-                        };
-                    };
-                    reader.readAsDataURL(file);
-                };
-                input.click();
+        function loadAlbum(artistName, albumName) {
+            currentAlbum = albumData?.[artistName]?.[albumName];
+
+            if (currentAlbum) {
+                const albumContainer = document.getElementById("albumContainer");
+
+                albumContainer.innerHTML = `
+                    <div class="album-card">
+                        <img src="${currentAlbum.image}" alt="${currentAlbum.name}">
+                        <h3>${currentAlbum.name}</h3>
+                        <ul>
+                            ${currentAlbum.songs.map((song, index) => {
+                                const songName = song.replace(".mp3", "");
+                                return `
+                                    <li id="song-${index}">
+                                        <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
+                                        <span class="song-name">${songName}</span>
+                                        <button class="add-to-playlist-button" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            } else {
+                document.getElementById("albumContainer").innerHTML = "<p>Album not found.</p>";
             }
         }
 
-        function loadPlaylists() {
-            if (!db) {
-                console.error('Database is not initialized');
-                return;
+        function playSong(songIndex, artistName, albumName, song, songElementId) {
+            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
+            if (previousPlayingElement) {
+                previousPlayingElement.classList.remove('playing');
             }
 
+            const currentPlayingElement = document.getElementById(songElementId);
+            currentPlayingElement.classList.add('playing');
+
+            currentSongIndex = songIndex;
+            const songPath = `music/${albumName}/${encodeURIComponent(song)}`;
+            audio.src = songPath;
+            localStorage.SongName = songPath;
+            playerSongName.textContent = song.replace(".mp3", ""); 
+            playerAlbumImage.src = currentAlbum.image;
+            playerElapsedTime.textContent = "0:00";
+            document.title = playerSongName.textContent + " - " + decodeURIComponent(artistName);
+
+            audio.play().then(() => {
+                startElapsedTimeUpdate();
+                playPauseButton.classList.remove("fa-play");
+                playPauseButton.classList.add("fa-pause");
+                playerStrip.style.display = "flex";
+            }).catch(error => {
+                console.error('Error playing the audio:', error);
+                console.log(songPath)
+            });
+
+            audio.onerror = () => {
+                alert('Error playing the song. Please check the file path or format.');
+            };
+
+            audio.onended = () => {
+                nextSong();
+            };
+
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: song.replace(".mp3", ""),
+                    artist: decodeURIComponent(artistName),
+                    album: currentAlbum.name,
+                    artwork: [
+                        { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentAlbum.image, sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', togglePlayPause);
+                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
+                navigator.mediaSession.setActionHandler('previoustrack', previousSong);
+                navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+            }
+        }
+
+        function startElapsedTimeUpdate() {
+            if (elapsedTimeInterval) {
+                clearInterval(elapsedTimeInterval);
+            }
+
+            elapsedTimeInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor(audio.currentTime);
+                localStorage.SongTime = elapsedSeconds;
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                playerElapsedTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function togglePlayPause() {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.classList.remove("fa-play");
+                playPauseButton.classList.add("fa-pause");
+            } else {
+                audio.pause();
+                playPauseButton.classList.remove("fa-pause");
+                playPauseButton.classList.add("fa-play");
+            }
+        }
+
+        function nextSong() {
+            if (currentSongIndex < currentAlbum.songs.length - 1) {
+                currentSongIndex++;
+                const song = currentAlbum.songs[currentSongIndex];
+                const artistName = getQueryParameter('artist');
+                const albumName = getQueryParameter('album');
+                playSong(currentSongIndex, artistName, albumName, song, `song-${currentSongIndex}`);
+            }
+        }
+
+        function previousSong() {
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+                const song = currentAlbum.songs[currentSongIndex];
+                const artistName = getQueryParameter('artist');
+                const albumName = getQueryParameter('album');
+                playSong(currentSongIndex, artistName, albumName, song, `song-${currentSongIndex}`);
+            }
+        }
+
+        playPauseButton.addEventListener("click", togglePlayPause);
+        document.getElementById("nextButton").addEventListener("click", nextSong);
+        document.getElementById("previousButton").addEventListener("click", previousSong);
+
+        const artistName = getQueryParameter('artist');
+        const albumName = getQueryParameter('album');
+        if (artistName && albumName) {
+            loadAlbum(artistName, albumName);
+        } else {
+            document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
+        }
+
+        function openPlaylistModal(song, artistName, albumName, albumImage, index) {
+            const modal = document.getElementById("playlistModal");
+            const playlistList = document.getElementById("playlistList");
+
+            // Clear previous playlist items
+            playlistList.innerHTML = '';
+
+            // Add playlists to the modal
             const transaction = db.transaction(['playlists'], 'readonly');
             const objectStore = transaction.objectStore('playlists');
             const request = objectStore.getAll();
 
             request.onsuccess = (event) => {
                 const playlists = event.target.result;
-                const playlistGrid = document.getElementById('playlistGrid');
-
-                // Insert the "Add Playlist" button at the start of the grid
-                playlistGrid.innerHTML = `
-                    <div class="album-card add-playlist" id="addPlaylistButton">+</div>
-                `; // Ensures the button is always there
-
-                playlistGrid.innerHTML += playlists.map((playlist) => `
-                    <div class="album-card playlist-card">
-                        <a href="/playlist.html?playlist=${encodeURIComponent(playlist.name)}">
-                            <img src="${playlist.image}" alt="${playlist.name}" style="width:150px;height:150px;">
-                        </a>
-                        <h3>${decodeURIComponent(playlist.name)}</h3>
-                        <button class="edit-button" onclick="editPlaylist(${playlist.id})">Edit</button>
-                        <button class="delete-button" onclick="deletePlaylist(${playlist.id})">Delete</button>
-                    </div>
-                `).join('');
-
-                document.getElementById('addPlaylistButton').addEventListener('click', createNewPlaylist);
+                playlists.forEach((playlist, idx) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = decodeURIComponent(playlist.name);
+                    listItem.onclick = () => {
+                        addToPlaylist(song, artistName, albumName, albumImage, playlist.id);
+                        closeModal();
+                    };
+                    playlistList.appendChild(listItem);
+                });
             };
 
             request.onerror = (event) => {
                 console.error('Error loading playlists:', event.target.errorCode);
             };
+
+            modal.style.display = "block";
         }
 
-        function editPlaylist(id) {
+        function closeModal() {
+            const modal = document.getElementById("playlistModal");
+            modal.style.display = "none";
+        }
+
+        function addToPlaylist(song, artistName, albumName, albumImage, playlistId) {
             const transaction = db.transaction(['playlists'], 'readwrite');
             const objectStore = transaction.objectStore('playlists');
-            const request = objectStore.get(id);
+            const request = objectStore.get(playlistId);
 
             request.onsuccess = (event) => {
                 const playlist = event.target.result;
-                const newName = encodeURIComponent(prompt("Enter new playlist name:", decodeURIComponent(playlist.name)));
-                if (newName) {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (event) => {
-                        const file = event.target.files[0];
-                        if (!file) {
-                            alert('You must select a photo to update the playlist.');
-                            return; // Stop the process if no file is selected
-                        }
 
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const newImage = e.target.result;
-                            playlist.name = newName;
-                            playlist.image = newImage;
-                            const updateRequest = objectStore.put(playlist);
+                if (playlist) {
+                    playlist.songs.push({
+                        name: song.replace(".mp3", ""),
+                        artist: artistName,
+                        album: albumName,
+                        albumArt: albumImage,
+                        path: `music/${albumName}/${encodeURIComponent(song)}`
+                    });
+                    const updateRequest = objectStore.put(playlist);
 
-                            updateRequest.onsuccess = () => {
-                                console.log('Playlist updated in the database');
-                                loadPlaylists();
-                                alert("Playlist " + decodeURIComponent(newName) + " successfully updated!")
-                            };
-
-                            updateRequest.onerror = (event) => {
-                                console.error('Error updating playlist:', event.target.errorCode);
-                            };
-                        };
-                        reader.readAsDataURL(file);
+                    updateRequest.onsuccess = () => {
+                        alert('Song added to playlist!');
                     };
-                    input.click();
+
+                    updateRequest.onerror = (event) => {
+                        console.error('Error updating playlist:', event.target.errorCode);
+                    };
+                } else {
+                    alert('Invalid playlist selection!');
                 }
             };
 
             request.onerror = (event) => {
-                console.error('Error fetching playlist:', event.target.errorCode);
+                console.error('Error retrieving playlist:', event.target.errorCode);
             };
         }
-
-        function deletePlaylist(id) {
-            if (confirm("Are you sure you want to delete this playlist?")) {
-                const transaction = db.transaction(['playlists'], 'readwrite');
-                const objectStore = transaction.objectStore('playlists');
-                const request = objectStore.delete(id);
-
-                request.onsuccess = () => {
-                    console.log('Playlist deleted from the database');
-                    loadPlaylists();
-                    alert("Playlist successfully deleted!")
-                };
-
-                request.onerror = (event) => {
-                    console.error('Error deleting playlist:', event.target.errorCode);
-                };
-            }
-        }
-
-        function loadAlbums() {
-            const albumGrid = document.getElementById("albumGrid");
-            const imagePromises = albums.map(album => {
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = album.image;
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                    const albumCard = document.createElement("div");
-                    albumCard.className = "album-card";
-                    albumCard.innerHTML = `
-                        <a href="${album.link}">
-                            <img src="${album.image}" alt="${album.title}">
-                        </a>
-                        <h3>${album.title}</h3>
-                    `;
-                    albumGrid.appendChild(albumCard);
-                });
-            });
-
-            Promise.all(imagePromises).then(() => {
-                document.getElementById("loadingScreen").style.display = "none";
-                document.getElementById("albumContainer").style.display = "block";
-            });
-        }
-
-        fetch('music/albums.json')
-            .then(response => response.json())
-            .then(jsonData => {
-                for (const artist in jsonData) {
-                    for (const album in jsonData[artist]) {
-                        const albumData = jsonData[artist][album];
-                        const albumObject = {
-                            title: album,
-                            image: albumData.image,
-                            link: `https://opiummusic.github.io/album.html?artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(album)}`
-                        };
-                        albums.push(albumObject);
-                    }
-                }
-                
-                loadAlbums();
-            })
-            .catch(error => console.error('Error fetching the JSON data:', error));
-
-        // Load existing playlists on page load
-        window.onload = function() {
-            if (db) {
-                loadPlaylists();
-            }
-        };
-
-        // Hamburger Menu and Modal functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburgerMenu = document.getElementById('hamburgerMenu');
-            const modal = document.getElementById('modal');
-            const closeButton = document.getElementById('closeButton');
-
-            hamburgerMenu.addEventListener('click', function() {
-                modal.style.display = 'block';
-            });
-
-            closeButton.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        });
     </script>
 </body>
 </html>
