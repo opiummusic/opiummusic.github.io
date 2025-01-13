@@ -242,14 +242,6 @@
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
 
-        const artistName = getQueryParameter('artist');
-        const albumName = getQueryParameter('album');
-        if (artistName && albumName) {
-            loadAlbum(artistName, albumName);
-        } else {
-            document.getElementById("albumContainer").innerHTML = "<p>No album specified.</p>";
-        }
-
 
             request.onerror = (event) => {
                 console.error('Error retrieving playlist:', event.target.errorCode);
