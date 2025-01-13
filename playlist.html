@@ -196,7 +196,7 @@ button:hover {
                 return;
             }
 
-            playlistImageInSongs.src = playlist.songs.albumArt || 'default-image.jpg';
+            playlistImageInSongs.src = playlist.image || 'default-image.jpg';
             document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
 
             songsList.innerHTML = playlist.songs.map((song, index) => `
@@ -226,7 +226,7 @@ button:hover {
 
             const songName = currentAlbum.songs[songIndex].name;
             playerSongName.textContent = songName;
-            playerAlbumImage.src = currentAlbum.image;
+            playerAlbumImage.src = albumArt;
             playerElapsedTime.textContent = "0:00";
             document.title = songName + " - " + decodeURIComponent(currentAlbum.name);
 
