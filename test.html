@@ -49,11 +49,10 @@
 
     <audio id="audioPlayer"></audio>
 
-
     <script>
-        let audio = document.getElementById('audioPlayer');
+        let audioPlayer = document.getElementById('audioPlayer');
         let currentSongIndex = 0;
-        let currentAlbum = null;
+        let currentPlaylist = null;
         let playPauseButton = document.getElementById("playPauseButton");
         let playerStrip = document.getElementById("playerStrip");
         let playerSongName = document.getElementById("playerSongName");
@@ -71,7 +70,7 @@
 
         request.onsuccess = (event) => {
             db = event.target.result;
-            loadPlaylists();
+            loadPlaylistFromURL();
         };
 
         request.onupgradeneeded = (event) => {
@@ -79,7 +78,8 @@
             const objectStore = db.createObjectStore('playlists', { keyPath: 'id', autoIncrement: true });
             objectStore.createIndex('name', 'name', { unique: false });
         };
-      function loadPlaylistFromURL() {
+
+        function loadPlaylistFromURL() {
             const urlParams = new URLSearchParams(window.location.search); 
             const playlistName = urlParams.get('playlist');
 
@@ -92,7 +92,7 @@
                 const selectedPlaylist = playlists.find(p => p.name === playlistName);
 
                 if (selectedPlaylist) {
-                    currentAlbum = selectedPlaylist; 
+                    currentPlaylist = selectedPlaylist; 
                     displaySongs(selectedPlaylist);
                 } else {
                     alert("No playlist exists")
@@ -105,54 +105,44 @@
             };
         }
 
-         function displaySongs(playlist) {
-            const songsContainer = document.getElementById('songsContainer');
-            const songsList = document.getElementById('songs');
-            const playlistImageInSongs = document.getElementById('playlistImageInSongs');
+        function displaySongs(playlist) {
+            const albumContainer = document.getElementById('albumContainer');
 
             if (!Array.isArray(playlist.songs) || playlist.songs.length === 0) {
                 console.error('No songs found or songs is not an array');
-                document.getElementById('playlisth2').textContent = "Add some songs to your playlist fool";
-                playlistImageInSongs.style.display = 'none';
-                songsContainer.style.display = 'block';
+                albumContainer.innerHTML = "<h2>Add some songs to your playlist</h2>";
                 return;
             }
 
-            playlistImageInSongs.src = playlist.image || 'default-image.jpg';
-            document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
-
-            songsList.innerHTML = playlist.songs.map((song, index) => `
-                 <li id="song-${index}">
-                                        <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
-                                        <span class="song-name">${song.name} - ${song.artist}</span>
-                                        <button class="trash" onclick="removesong()">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </li>
+            albumContainer.innerHTML = playlist.songs.map((song, index) => `
+                <div class="song-item" id="song-${index}">
+                    <i class="fa fa-play play-icon" onclick='playSong(${index}, "${playlist.name}", "${song.path}")'></i>
+                    <span class="song-name">${song.name} - ${song.artist}</span>
+                    <button class="trash" onclick="removeSong(${index})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
             `).join('');
-
-            songsContainer.style.display = 'block';
         }
 
-        function playSong(songIndex, artistName, albumName, song, songElementId) {
-            const previousPlayingElement = document.querySelector('.album-card ul li.playing');
+        function playSong(songIndex, playlistName, songPath) {
+            const previousPlayingElement = document.querySelector('.song-item.playing');
             if (previousPlayingElement) {
                 previousPlayingElement.classList.remove('playing');
             }
 
-            const currentPlayingElement = document.getElementById(songElementId);
+            const currentPlayingElement = document.getElementById(`song-${songIndex}`);
             currentPlayingElement.classList.add('playing');
 
             currentSongIndex = songIndex;
-            const songPath = `music/${albumName}/${encodeURIComponent(song)}`;
-            audio.src = songPath;
+            audioPlayer.src = songPath;
             localStorage.SongName = songPath;
-            playerSongName.textContent = song.replace(".mp3", ""); 
-            playerAlbumImage.src = currentAlbum.image;
+            playerSongName.textContent = songPath.split('/').pop().replace(".mp3", ""); 
+            playerAlbumImage.src = currentPlaylist.image;
             playerElapsedTime.textContent = "0:00";
-            document.title = playerSongName.textContent + " - " + decodeURIComponent(artistName);
+            document.title = playerSongName.textContent + " - " + decodeURIComponent(playlistName);
 
-            audio.play().then(() => {
+            audioPlayer.play().then(() => {
                 startElapsedTimeUpdate();
                 playPauseButton.classList.remove("fa-play");
                 playPauseButton.classList.add("fa-pause");
@@ -162,26 +152,26 @@
                 console.log(songPath)
             });
 
-            audio.onerror = () => {
+            audioPlayer.onerror = () => {
                 alert('Error playing the song. Please check the file path or format.');
             };
 
-            audio.onended = () => {
+            audioPlayer.onended = () => {
                 nextSong();
             };
 
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
-                    title: song.replace(".mp3", ""),
-                    artist: decodeURIComponent(artistName),
-                    album: currentAlbum.name,
+                    title: songPath.split('/').pop().replace(".mp3", ""),
+                    artist: decodeURIComponent(playlistName),
+                    album: currentPlaylist.name,
                     artwork: [
-                        { src: currentAlbum.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentAlbum.image, sizes: '512x512', type: 'image/jpeg' }
+                        { src: currentPlaylist.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentPlaylist.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentPlaylist.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentPlaylist.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentPlaylist.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentPlaylist.image, sizes: '512x512', type: 'image/jpeg' }
                     ]
                 });
 
@@ -198,7 +188,7 @@
             }
 
             elapsedTimeInterval = setInterval(() => {
-                const elapsedSeconds = Math.floor(audio.currentTime);
+                const elapsedSeconds = Math.floor(audioPlayer.currentTime);
                 localStorage.SongTime = elapsedSeconds;
                 const minutes = Math.floor(elapsedSeconds / 60);
                 const seconds = elapsedSeconds % 60;
@@ -207,34 +197,30 @@
         }
 
         function togglePlayPause() {
-            if (audio.paused) {
-                audio.play();
+            if (audioPlayer.paused) {
+                audioPlayer.play();
                 playPauseButton.classList.remove("fa-play");
                 playPauseButton.classList.add("fa-pause");
             } else {
-                audio.pause();
+                audioPlayer.pause();
                 playPauseButton.classList.remove("fa-pause");
                 playPauseButton.classList.add("fa-play");
             }
         }
 
         function nextSong() {
-            if (currentSongIndex < currentAlbum.songs.length - 1) {
+            if (currentSongIndex < currentPlaylist.songs.length - 1) {
                 currentSongIndex++;
-                const song = currentAlbum.songs[currentSongIndex];
-                const artistName = getQueryParameter('artist');
-                const albumName = getQueryParameter('album');
-                playSong(currentSongIndex, artistName, albumName, song, `song-${currentSongIndex}`);
+                const song = currentPlaylist.songs[currentSongIndex];
+                playSong(currentSongIndex, currentPlaylist.name, song.path);
             }
         }
 
         function previousSong() {
             if (currentSongIndex > 0) {
                 currentSongIndex--;
-                const song = currentAlbum.songs[currentSongIndex];
-                const artistName = getQueryParameter('artist');
-                const albumName = getQueryParameter('album');
-                playSong(currentSongIndex, artistName, albumName, song, `song-${currentSongIndex}`);
+                const song = currentPlaylist.songs[currentSongIndex];
+                playSong(currentSongIndex, currentPlaylist.name, song.path);
             }
         }
 
@@ -242,10 +228,13 @@
         document.getElementById("nextButton").addEventListener("click", nextSong);
         document.getElementById("previousButton").addEventListener("click", previousSong);
 
+        function removeSong(index) {
+            const transaction = db.transaction(['playlists'], 'readwrite');
+            const objectStore = transaction.objectStore('playlists');
+            currentPlaylist.songs.splice(index, 1);
+            objectStore.put(currentPlaylist);
 
-            request.onerror = (event) => {
-                console.error('Error retrieving playlist:', event.target.errorCode);
-            };
+            displaySongs(currentPlaylist);
         }
     </script>
 </body>
