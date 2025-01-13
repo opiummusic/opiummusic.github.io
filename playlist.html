@@ -226,7 +226,7 @@ button:hover {
 
             const songName = currentAlbum.songs[songIndex].name;
             playerSongName.textContent = songName;
-            playerAlbumImage.src = albumArt;
+            playerAlbumImage.src = playlist.songs[songIndex].albumArt;
             playerElapsedTime.textContent = "0:00";
             document.title = songName + " - " + decodeURIComponent(currentAlbum.name);
 
