@@ -227,6 +227,7 @@ button:hover {
             audio.play();
 
             const songName = currentAlbum.songs[songIndex].name;
+            const song = currentAlbum.songs[songIndex];
             playerSongName.textContent = songName;
             playerAlbumImage.src = currentAlbum.songs[songIndex].albumArt;
             playerElapsedTime.textContent = "0:00";
