@@ -9,19 +9,19 @@
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
     <style>
-        /* Add-to-playlist button styles */
+ 
         .add-to-playlist-button {
             background: none;
             border: none;
-            color: #1e90ff; /* Blue accent color */
+            color: #D84040;
             cursor: pointer;
-            font-size: 1.2em; /* Increase the size of the icon */
+            font-size: 1.2em;
             padding: 5px;
-            transition: color 0.3s; /* Smooth transition for color change */
+            transition: color 0.3s; 
         }
 
         .add-to-playlist-button:hover {
-            color: #1c86ee; /* Darker blue on hover */
+            color: #8E1616;
         }
     </style>
 </head>
@@ -128,7 +128,7 @@
                                         <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
                                         <button class="add-to-playlist-button" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
-                                            <i class="fa fa-plus"></i>
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </li>
                                 `;
