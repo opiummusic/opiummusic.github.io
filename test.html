@@ -9,8 +9,7 @@
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
     <style>
- 
-        .add-to-playlist-button {
+        .trash {
             background: none;
             border: none;
             color: #D84040;
@@ -20,7 +19,7 @@
             transition: color 0.3s; 
         }
 
-        .add-to-playlist-button:hover {
+        .trash:hover {
             color: #8E1616;
         }
     </style>
@@ -127,7 +126,7 @@
                                     <li id="song-${index}">
                                         <i class="fa fa-play play-icon" onclick="playSong(${index}, '${artistName}', '${albumName}', '${song}', 'song-${index}')"></i>
                                         <span class="song-name">${songName}</span>
-                                        <button class="add-to-playlist-button" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
+                                        <button class="trash" onclick="openPlaylistModal('${song}', '${artistName}', '${albumName}', '${currentAlbum.image}', ${index})">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </li>
