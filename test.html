@@ -9,85 +9,6 @@
     <link href="assets/playstrip.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
     <style>
-        /* Modal styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0, 0, 0, 0.8); /* Black with opacity */
-            backdrop-filter: blur(5px); /* Add a blur effect for modern look */
-        }
-
-        .modal-content {
-            background-color: #2c2c2c; /* Dark background */
-            color: #ffffff; /* White text */
-            margin: 15% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: none; /* Remove border */
-            border-radius: 10px; /* Rounded corners */
-            width: 80%; /* Could be more or less, depending on screen size */
-            max-width: 500px; /* Maximum width */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-        }
-
-        .close {
-            color: #ffffff; /* White color */
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #1e90ff; /* Blue accent color on hover/focus */
-            text-decoration: none;
-        }
-
-        .playlist-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .playlist-list li {
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #3a3a3a; /* Slightly lighter background */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer;
-            transition: background-color 0.3s; /* Smooth transition */
-        }
-
-        .playlist-list li:hover {
-            background-color: #4a4a4a; /* Slightly darker on hover */
-        }
-
-        .modal h2 {
-            margin-top: 0;
-            color: #1e90ff; /* Blue accent color */
-            text-align: center;
-        }
-
-        .modal button {
-            background-color: #1e90ff; /* Blue accent color */
-            color: #ffffff; /* White text */
-            border: none;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer;
-            transition: background-color 0.3s; /* Smooth transition */
-        }
-
-        .modal button:hover {
-            background-color: #1c86ee; /* Darker blue accent color on hover */
-        }
-
         /* Add-to-playlist button styles */
         .add-to-playlist-button {
             background: none;
@@ -129,17 +50,6 @@
 
     <audio id="audioPlayer"></audio>
 
-    <!-- The Modal -->
-    <div id="playlistModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Select Playlist</h2>
-            <ul id="playlistList" class="playlist-list">
-                <!-- Playlists will be dynamically added here -->
-            </ul>
-            <button onclick="closeModal()">Cancel</button>
-        </div>
-    </div>
 
     <script>
         let audio = document.getElementById('audioPlayer');
