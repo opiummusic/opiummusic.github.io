@@ -196,7 +196,7 @@ button:hover {
                 return;
             }
 
-            playlistImageInSongs.src = song.albumArt || 'default-image.jpg';
+            playlistImageInSongs.src = playlist.songs.albumArt || 'default-image.jpg';
             document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
 
             songsList.innerHTML = playlist.songs.map((song, index) => `
