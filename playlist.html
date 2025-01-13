@@ -355,6 +355,25 @@ button.trash:hover i {
                 playPauseButton.classList.add("fa-play");
             }
         }
+        function removeSong(songIndex) {
+            if (currentAlbum && currentAlbum.songs) {
+                currentAlbum.songs.splice(songIndex, 1); // Remove the song from the array
+
+                // Update the playlist in IndexedDB
+                const transaction = db.transaction(['playlists'], 'readwrite');
+                const objectStore = transaction.objectStore('playlists');
+                const request = objectStore.put(currentAlbum);
+
+                request.onsuccess = () => {
+                    console.log('Song removed and playlist updated successfully');
+                    displaySongs(currentAlbum); // Refresh the displayed song list
+                };
+
+                request.onerror = (event) => {
+                    console.error('Error updating the playlist:', event.target.errorCode);
+                };
+            }
+        }
     </script>
 </body>
 </html>
