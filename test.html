@@ -137,6 +137,78 @@
             color: #ffffff;
             font-size: 1.5rem;
         }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1f1f1f;
+            color: #ffffff;
+            border: none;
+            font-size: 2rem;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #1f1f1f;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .menu-options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .menu-options li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-options li img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
 <body>
@@ -153,6 +225,24 @@
     <div class="album-container">
         <h2>Albums:</h2>
         <div class="album-grid" id="albumGrid"></div>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+        &#9776;
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeButton">&times;</span>
+            <ul class="menu-options">
+                <li onclick="editPlaylist()"><img src="path/to/edit-icon.png" alt="Edit Icon"> Edit Playlist</li>
+                <li onclick="deletePlaylist()"><img src="path/to/delete-icon.png" alt="Delete Icon"> Delete Playlist</li>
+                <li><img src="path/to/settings-icon.png" alt="Settings Icon"> Settings</li>
+                <!-- Add more options as needed -->
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -368,6 +458,27 @@
                 loadPlaylists();
             }
         };
+
+        // Hamburger Menu and Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const modal = document.getElementById('modal');
+            const closeButton = document.getElementById('closeButton');
+
+            hamburgerMenu.addEventListener('click', function() {
+                modal.style.display = 'block';
+            });
+
+            closeButton.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
