@@ -16,6 +16,7 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            display: none;
         }
 
         .header {
@@ -108,14 +109,19 @@
         }
 
         .loading-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #000000;
-            color: #ffffff;
-            font-size: 1.5rem;
-        }
+    position: fixed; /* Ensures it covers the viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+    color: #ffffff;
+    font-size: 1.5rem;
+    z-index: 1000; /* Ensures it's above everything else */
+}
     </style>
 </head>
 <body>
@@ -234,30 +240,31 @@ function createNewPlaylist() {
 
 
         function loadAlbums() {
-            const albumGrid = document.getElementById("albumGrid");
-            const imagePromises = albums.map(album => {
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = album.image;
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                    const albumCard = document.createElement("div");
-                    albumCard.className = "album-card";
-                    albumCard.innerHTML = `
-                        <a href="${album.link}">
-                            <img src="${album.image}" alt="${album.title}">
-                        </a>
-                        <h3>${album.title}</h3>
-                    `;
-                    albumGrid.appendChild(albumCard);
-                });
-            });
+    const albumGrid = document.getElementById("albumGrid");
+    const imagePromises = albums.map(album => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = album.image;
+            img.onload = resolve;
+            img.onerror = resolve;
+            const albumCard = document.createElement("div");
+            albumCard.className = "album-card";
+            albumCard.innerHTML = `
+                <a href="${album.link}">
+                    <img src="${album.image}" alt="${album.title}">
+                </a>
+                <h3>${album.title}</h3>
+            `;
+            albumGrid.appendChild(albumCard);
+        });
+    });
 
-            Promise.all(imagePromises).then(() => {
-                document.getElementById("loadingScreen").style.display = "none";
-                document.getElementById("album-container").style.display = "block";
-            });
-        }
+    Promise.all(imagePromises).then(() => {
+        document.getElementById("loadingScreen").style.display = "none";
+        document.body.style.display = "block"; // Show the body
+    });
+}
+
 
         fetch('music/albums.json')
             .then(response => response.json())
