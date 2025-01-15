@@ -146,4 +146,29 @@
       ]
     }
   }
+  "Lil Uzi": {
+    "EA2": {
+      "name": "Eternal Atake 2",
+      "image": "images/EA2.jpeg",
+      "songs": [
+  "Black Hole.mp3",
+  "Chill Bae.mp3",
+  "Chips and Dip.mp3",
+  "Conceited.mp3",
+  "Goddard Song.mp3",
+  "Light Year (Practice).mp3",
+  "Lyft Em Up.mp3",
+  "Meteor Man.mp3",
+  "Mr Chow.mp3",
+  "Not An Option.mp3",
+  "Paars In The Mars.mp3",
+  "PerkySex.mp3",
+  "She Stank.mp3",
+  "Space High.mp3",
+  "The Rush (feat. Big Time Rush).mp3",
+  "We Good.mp3"
+]
+
+    }
+  }
 }
