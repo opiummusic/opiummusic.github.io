@@ -168,4 +168,33 @@
       ]
     }
   }
+  {
+  "Destroy Lonely": {
+    "NOSTYLIST": {
+    "name": "NOSTYLIST",
+    "image": "images/NOSTYLIST.jpeg",
+    "songs": [
+      "<3MYGNG.mp3",
+      "BERGDORF.mp3",
+      "CRYSTLCSTLES.mp3",
+      "DANGEROUS.mp3",
+      "FAKENGGAS.mp3",
+      "JETLGGD.mp3",
+      "LNLY.mp3",
+      "MKEITSTOP.mp3",
+      "NOSTYLIST.mp3",
+      "ONTHEFLOOR.mp3",
+      "ONTHETABLE.mp3",
+      "OTW.mp3",
+      "PASSAROUND.mp3",
+      "PRSSURE.mp3",
+      "SOARIN.mp3",
+      "SWGSKOOL.mp3",
+      "TURNINUP.mp3",
+      "VETERAN.mp3",
+      "VTMNTSCOAT.mp3"
+    ]
+  }
+}
+
 }
