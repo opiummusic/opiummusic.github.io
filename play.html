@@ -273,7 +273,7 @@ function createNewPlaylist() {
                     for (const album in jsonData[artist]) {
                         const albumData = jsonData[artist][album];
                         const albumObject = {
-                            title: album,
+                            title: albumData.name,
                             image: albumData.image,
                             link: `https://opiummusic.github.io/album.html?artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(album)}`
                         };
