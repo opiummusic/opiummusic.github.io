@@ -1,0 +1,40 @@
+{
+    "playlists": [
+        {
+            "name": "Lil Uzi essentials",
+            "image": "essentials/picture1.jpeg",
+            "songs": [
+                {
+                    "name": "20 min",
+                    "artist": "Lil uzi",
+                    "path": "music/LuvIsRage/20%20min.mp3",
+                    "albumArt": "img/LuvIsRage.jpeg"
+                },
+                {
+                    "name": "Song 2",
+                    "artist": "Artist 2",
+                    "path": "songs/essentials1/song2.mp3",
+                    "albumArt": "album_art/essentials1/song2.jpg"
+                }
+            ]
+        },
+        {
+            "name": "Essentials2",
+            "image": "essentials/picture2.jpeg",
+            "songs": [
+                {
+                    "name": "Song A",
+                    "artist": "Artist A",
+                    "path": "songs/essentials2/songA.mp3",
+                    "albumArt": "album_art/essentials2/songA.jpg"
+                },
+                {
+                    "name": "Song B",
+                    "artist": "Artist B",
+                    "path": "songs/essentials2/songB.mp3",
+                    "albumArt": "album_art/essentials2/songB.jpg"
+                }
+            ]
+        }
+    ]
+}
