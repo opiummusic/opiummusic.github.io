@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opium Music Player</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/playstrip.css" rel="stylesheet">
+    <link href="assets/styles.css" rel="stylesheet">
+    <style>
+   /* General Reset and Body Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #000000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='index.html'">
+        <i class="fa fa-arrow-left"></i>
+    </button>
+
+    <div id="songsContainer" style="display: none;">
+        <img id="playlistImageInSongs" src="" alt="Playlist Image">
+        <h2 id="playlisth2">Playlist</h2>
+        <ul id="songs"></ul>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        let audio = document.getElementById('audioPlayer');
+        let currentSongIndex = 0;
+        let currentAlbum = null;
+
+        // Load playlist from JSON based on URL parameter
+        function loadPlaylistFromJSON() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistName = urlParams.get('playlist');
+
+            if (!playlistName) {
+                alert("No playlist specified in the URL!");
+                return;
+            }
+
+            fetch('essentials.json')
+                .then(response => response.json())
+                .then(data => {
+                    const playlist = data.playlists.find(p => p.name === playlistName);
+                    if (playlist) {
+                        currentAlbum = playlist;
+                        displaySongs(playlist);
+                    } else {
+                        alert("Playlist not found!");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading JSON:', error);
+                });
+        }
+
+        // Display songs in the selected playlist
+        function displaySongs(playlist) {
+            const songsContainer = document.getElementById('songsContainer');
+            const songsList = document.getElementById('songs');
+            const playlistImageInSongs = document.getElementById('playlistImageInSongs');
+
+            if (!playlist.songs || playlist.songs.length === 0) {
+                alert("No songs found in this playlist!");
+                return;
+            }
+
+            playlistImageInSongs.src = playlist.image || 'default-image.jpg';
+            document.getElementById('playlisth2').textContent = decodeURIComponent(playlist.name);
+
+            songsList.innerHTML = playlist.songs.map((song, index) => `
+                <li id="song-${index}">
+                    <i class="fa fa-play play-icon" onclick='playSong(${index}, "${song.path}", "song-${index}")'></i>
+                    <span class="song-name">${song.name} - ${song.artist}</span>
+                </li>
+            `).join('');
+
+            songsContainer.style.display = 'block';
+        }
+
+        // Play the selected song
+        function playSong(songIndex, songPath, songElementId) {
+            const previousPlayingElement = document.querySelector('#songs li.playing');
+            if (previousPlayingElement) {
+                previousPlayingElement.classList.remove('playing');
+            }
+
+            const currentPlayingElement = document.getElementById(songElementId);
+            if (currentPlayingElement) {
+                currentPlayingElement.classList.add('playing');
+            }
+
+            currentSongIndex = songIndex;
+            audio.src = songPath;
+            audio.play();
+
+            const song = currentAlbum.songs[songIndex];
+            document.title = song.name + " - " + song.artist;
+
+            audio.play().catch(error => {
+                console.error('Error playing the audio:', error);
+            });
+
+            audio.onended = () => {
+                if (currentSongIndex < currentAlbum.songs.length - 1) {
+                    currentSongIndex++;
+                    const nextSong = currentAlbum.songs[currentSongIndex];
+                    playSong(currentSongIndex, nextSong.path, `song-${currentSongIndex}`);
+                }
+            };
+        }
+
+        // Initialize the player
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPlaylistFromJSON();
+        });
+    </script>
+</body>
+</html>
