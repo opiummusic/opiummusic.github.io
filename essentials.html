@@ -42,7 +42,7 @@ button {
 
     <div id="songsContainer" style="display: none;">
         <img id="playlistImageInSongs" src="" alt="Playlist Image">
-        <h2 id="playlisth2">Playlist</h2>
+        <h2 id="playlisth2">Loading...</h2>
         <ul id="songs"></ul>
     </div>
 
@@ -69,6 +69,7 @@ button {
                     const playlist = data.playlists.find(p => p.name === playlistName);
                     if (playlist) {
                         currentAlbum = playlist;
+                        document.getElementId.playlisth2 = playlist; 
                         displaySongs(playlist);
                     } else {
                         alert("Playlist not found!");
