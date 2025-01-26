@@ -56,7 +56,7 @@
         // Load playlist from JSON based on URL parameter
         function loadPlaylistFromJSON() {
             const urlParams = new URLSearchParams(window.location.search);
-            const playlistName = urlParams.get('playlist');
+            const playlistName = decodeURIComponent(urlParams.get('playlist'));  // Decoding URL parameter
 
             if (!playlistName) {
                 alert("No playlist specified in the URL!");
@@ -66,7 +66,8 @@
             fetch('essentials.json')
                 .then(response => response.json())
                 .then(data => {
-                    const playlist = data.playlists.find(p => p.name === playlistName);
+                    // Case-insensitive matching of playlist name
+                    const playlist = data.playlists.find(p => p.name.toLowerCase() === playlistName.toLowerCase());
                     if (playlist) {
                         currentAlbum = playlist;
                         document.getElementById('playlisth2').textContent = playlist.name;
