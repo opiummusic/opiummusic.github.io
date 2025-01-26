@@ -8,31 +8,31 @@
     <link href="assets/playstrip.css" rel="stylesheet">
     <link href="assets/styles.css" rel="stylesheet">
     <style>
-   /* General Reset and Body Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* General Reset and Body Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000000;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-button {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
+        button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -69,7 +69,7 @@ button {
                     const playlist = data.playlists.find(p => p.name === playlistName);
                     if (playlist) {
                         currentAlbum = playlist;
-                        document.getElementId.playlisth2 = playlist; 
+                        document.getElementById('playlisth2').textContent = playlist.name;
                         displaySongs(playlist);
                     } else {
                         alert("Playlist not found!");
