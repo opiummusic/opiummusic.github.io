@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opium Music</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">  <!-- Enables standalone mode -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  <!-- Status bar style -->
+    <meta name="apple-mobile-web-app-capable" content="yes">  
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> 
     <meta name="apple-mobile-web-app-title" content="Opium Music Player">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/x-icon" href="favicon/icon.png">
     <style>
-        /* Global Styles */
         body {
-            background: #000000; /* Pure black background */
-            color: #ffffff; /* Pure white text */
+            background: #000000;
+            color: #ffffff;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -23,18 +22,16 @@
             height: 100vh;
         }
 
-        /* Container */
         .container {
             text-align: center;
             padding: 20px;
-            border: 1px solid #ffffff; /* White border */
+            border: 1px solid #ffffff; 
             border-radius: 10px;
-            background: #000000; /* Black background */
+            background: #000000; 
             width: 90%;
             max-width: 600px;
         }
 
-        /* Opium Label Logo */
         .logo {
             font-size: 2.5rem;
             font-weight: bold;
@@ -47,7 +44,6 @@
             padding-bottom: 10px;
         }
 
-        /* Slideshow */
         .slideshow-container {
             position: relative;
             max-width: 100%;
@@ -57,7 +53,6 @@
             border-radius: 10px;
         }
 
-        /* Slide Images */
         .slide {
             display: none;
         }
@@ -67,7 +62,6 @@
             border-radius: 10px;
         }
 
-        /* Text Overlay */
         .slide-text {
             position: absolute;
             bottom: 20px;
@@ -80,7 +74,6 @@
             font-size: 1.2rem;
         }
 
-        /* Button */
         .btn {
             display: inline-block;
             padding: 15px 30px;
@@ -98,7 +91,6 @@
             background: #e5e5e5;
         }
 
-        /* Tooltip */
         .tooltip {
             display: none;
             background: #ffffff;
@@ -120,11 +112,9 @@
 </head>
 <body>
     <div class="container">
-        <!-- Logo -->
         <div class="logo">Opium Music</div>
         <p>Experience the joy of opium with over 50+ songs at your fingertips.</p>
         
-        <!-- Slideshow -->
         <div class="slideshow-container">
             <div class="slide">
                 <img src="images/dielit.jpeg" alt="Die Lit">
@@ -148,7 +138,6 @@
             </div>
         </div>
 
-        <!-- Add to Home Screen Button -->
         <button class="btn" onclick="showTooltip()">Download</button>
         <div id="tooltip" class="tooltip">
             Open the share menu in Safari and select <strong>Add to Home Screen</strong>.
@@ -156,7 +145,6 @@
     </div>
 
     <script>
-        // Tooltip display
         function showTooltip() {
             const tooltip = document.getElementById('tooltip');
             tooltip.classList.add('visible');
@@ -165,7 +153,6 @@
             }, 5000); // Hide the tooltip after 5 seconds
         }
 
-        // Slideshow functionality
         let slideIndex = 0;
         showSlides();
 
@@ -179,7 +166,7 @@
                 slideIndex = 1;
             }
             slides[slideIndex - 1].style.display = 'block';  
-            setTimeout(showSlides, 3000); // Change slide every 3 seconds
+            setTimeout(showSlides, 3000); 
         }
     </script>
     <script>
