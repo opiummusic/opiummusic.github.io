@@ -8,7 +8,6 @@
     <link href="assets/playstrip.css" rel="stylesheet">
     <link href="assets/styles.css" rel="stylesheet">
     <style>
-        /* General Reset and Body Styles */
         * {
             margin: 0;
             padding: 0;
@@ -53,7 +52,6 @@
         let currentSongIndex = 0;
         let currentAlbum = null;
 
-        // Load playlist from JSON based on URL parameter
         function loadPlaylistFromJSON() {
             const urlParams = new URLSearchParams(window.location.search);
             const playlistName = decodeURIComponent(urlParams.get('playlist'));  // Decoding URL parameter
@@ -66,7 +64,6 @@
             fetch('essentials.json')
                 .then(response => response.json())
                 .then(data => {
-                    // Case-insensitive matching of playlist name
                     const playlist = data.playlists.find(p => p.name.toLowerCase() === playlistName.toLowerCase());
                     if (playlist) {
                         currentAlbum = playlist;
@@ -81,7 +78,6 @@
                 });
         }
 
-        // Display songs in the selected playlist
         function displaySongs(playlist) {
             const songsContainer = document.getElementById('songsContainer');
             const songsList = document.getElementById('songs');
@@ -105,7 +101,6 @@
             songsContainer.style.display = 'block';
         }
 
-        // Play the selected song
         function playSong(songIndex, songPath, songElementId) {
             const previousPlayingElement = document.querySelector('#songs li.playing');
             if (previousPlayingElement) {
@@ -137,7 +132,6 @@
             };
         }
 
-        // Initialize the player
         document.addEventListener('DOMContentLoaded', () => {
             loadPlaylistFromJSON();
         });
