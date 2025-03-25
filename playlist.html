@@ -10,7 +10,6 @@
     <link href="assets/styles.css" rel="stylesheet">
 </head>
 <style>
-   /* General Reset and Body Styles */
 * {
     margin: 0;
     padding: 0;
@@ -40,7 +39,6 @@ button:hover {
    color:#1f8fff; 
 } 
 
-/* Back Button Styles */
 .back-button {
     position: absolute;
     top: 20px;
@@ -53,7 +51,6 @@ button:hover {
     font-size: 24px;
 }
 
-/* Songs List Container */
    #songsContainer {
     display: flex;
     flex-direction: column;
@@ -356,16 +353,15 @@ button.trash:hover i {
         }
         function removeSong(songIndex) {
             if (currentAlbum && currentAlbum.songs) {
-                currentAlbum.songs.splice(songIndex, 1); // Remove the song from the array
+                currentAlbum.songs.splice(songIndex, 1); 
 
-                // Update the playlist in IndexedDB
                 const transaction = db.transaction(['playlists'], 'readwrite');
                 const objectStore = transaction.objectStore('playlists');
                 const request = objectStore.put(currentAlbum);
 
                 request.onsuccess = () => {
                     console.log('Song removed and playlist updated successfully');
-                    displaySongs(currentAlbum); // Refresh the displayed song list
+                    displaySongs(currentAlbum);
                 };
 
                 request.onerror = (event) => {
